@@ -1,0 +1,87 @@
+/* ==========================================================================
+   RESET GLOBAL Y COMPORTAMIENTO DE PANTALLA
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Crucial: los paddings no suman al ancho total */
+}
+
+html, 
+body, 
+#root {
+  width: 100%;           /* Ocupa todo el ancho del navegador */
+  height: 100%;          /* Ocupa todo el alto del navegador */
+  overflow: hidden;      /* Evita que aparezcan barras de scroll en el cuerpo principal */
+}
+
+/* ==========================================================================
+   VARIABLES DE DISEÑO (TEMA LOS ROBLES)
+   ========================================================================== */
+:root {
+  /* Colores del Sistema (Verdes y Neutros) */
+  --text: #475569;
+  --text-h: #1e293b;
+  --bg: #f8fafc;
+  --border: #e2e8f0;
+  --code-bg: #f1f5f9;
+  
+  /* Verde Institucional Los Robles */
+  --accent: #2d5a27; 
+  --accent-bg: rgba(45, 90, 39, 0.1);
+  --accent-border: rgba(45, 90, 39, 0.5);
+  
+  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+
+  /* Tipografía */
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --heading: 'Inter', system-ui, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 16px/1.5 var(--sans); /* Bajamos a 16px para una interfaz más limpia */
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   CONFIGURACIÓN DEL CONTENEDOR RAIZ (#root)
+   Aquí es donde eliminamos el límite de 1126px
+   ========================================================================== */
+#root {
+  width: 100%;            /* Eliminado el ancho fijo de 1126px */
+  max-width: 100%;        /* Asegura que nunca se desborde */
+  margin: 0;              /* Eliminado el auto-centrado */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border-inline: none;    /* Eliminado el borde lateral que limitaba la vista */
+}
+
+/* ==========================================================================
+   ELEMENTOS BASE
+   ========================================================================== */
+h1, h2 {
+  font-family: var(--heading);
+  font-weight: 600;
+  color: var(--text-h);
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+/* Utilidad para scroll interno (para las tablas de visitantes) */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}

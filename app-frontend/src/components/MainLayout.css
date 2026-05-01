@@ -1,0 +1,261 @@
+/* ==========================================================================
+   VARIABLES Y CONFIGURACIÓN GLOBAL
+   ========================================================================== */
+:root {
+    /* Paleta de colores institucional "Los Robles" */
+    --sidebar-bg: #1e3a1a;       /* Verde bosque profundo */
+    --sidebar-hover: #2a4d25;    /* Verde intermedio para hover */
+    --accent-color: #4ade80;     /* Verde neón suave (éxito/activo) */
+    --accent-dark: #064e3b;      /* Texto sobre el color de acento */
+    
+    /* Colores de interfaz */
+    --bg-main: #f1f5f9;          /* Gris azulado muy claro para el fondo */
+    --text-main: #334155;        /* Gris oscuro para lectura */
+    --text-muted: #94a3b8;       /* Gris claro para iconos/subtítulos */
+    --text-light: #f8fafc;       /* Blanco roto para sidebar */
+    
+    /* Sombras y efectos */
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    
+    /* Animaciones */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   ESTRUCTURA DE DISEÑO (LAYOUT)
+   ========================================================================== */
+
+/* Contenedor padre: Ocupa el 100% de la pantalla sin scroll externo */
+.dashboard-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100vh; /* Altura de pantalla completa */
+    background-color: var(--bg-main);
+    overflow: hidden; /* Bloquea el scroll general */
+}
+
+/* Área de contenido a la derecha del sidebar */
+.main-viewport {
+    flex: 1; /* Ocupa el espacio restante automáticamente */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Mantiene el header fijo */
+}
+
+/* ==========================================================================
+   BARRA LATERAL (SIDEBAR)
+   ========================================================================== */
+.modern-sidebar {
+    width: 260px;
+    min-width: 260px;
+    height: 100vh;
+    background-color: var(--sidebar-bg);
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    transition: var(--transition);
+    z-index: 100;
+}
+
+/* Estado colapsado (Sidebar estrecho) */
+.dashboard-wrapper.collapsed .modern-sidebar {
+    width: 85px;
+    min-width: 85px;
+}
+
+/* Cabecera del Sidebar (Logo + Botón) */
+.sidebar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 1rem 0.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Si está colapsado, apilamos logo y botón */
+.dashboard-wrapper.collapsed .sidebar-top {
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.logo-section img {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: white;
+    padding: 3px;
+    box-shadow: var(--shadow-sm);
+}
+
+.logo-section span {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+}
+
+/* Botón de colapso (Hamburgesa/Flecha) */
+.toggle-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--accent-color);
+}
+
+/* ==========================================================================
+   NAVEGACIÓN Y BOTONES
+   ========================================================================== */
+.modern-nav {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.modern-nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+.modern-nav-item .icon {
+    min-width: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.modern-nav-item .text {
+    margin-left: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.modern-nav-item:hover {
+    background: var(--sidebar-hover);
+    color: white;
+}
+
+/* Estilo para la ruta donde se encuentra el usuario */
+.modern-nav-item.active {
+    background: var(--accent-color);
+    color: var(--accent-dark);
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(74, 222, 128, 0.2);
+}
+
+/* Botón de Logout */
+.modern-btn-logout {
+    width: 100%;
+    background: #450a0a;
+    color: #fecaca;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    margin-top: auto;
+    transition: 0.2s;
+}
+
+.modern-btn-logout:hover {
+    background: #7f1d1d;
+    color: white;
+}
+
+/* ==========================================================================
+   CABECERA Y CONTENIDO (DASHBOARD)
+   ========================================================================== */
+.modern-header {
+    height: 70px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--sidebar-bg);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+/* Área de trabajo: Donde viven las páginas de Activos, Ingresos, etc. */
+.modern-content {
+    padding: 2.5rem;
+    flex: 1;
+    display: flex;
+    justify-content: center; /* Centrado horizontal */
+    align-items: flex-start;  /* Inicio vertical para evitar recortes */
+    overflow-y: auto;        /* Solo scroll vertical si el contenido es largo */
+}
+
+/* La tarjeta "vidrio" que contiene los formularios y tablas */
+.glass-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 1250px;       /* Ancho máximo elegante */
+    box-shadow: var(--shadow-md);
+    margin: 0 auto;
+    border: 1px solid #f1f5f9;
+}
