@@ -1,0 +1,185 @@
+/* Contenedor principal con profundidad */
+.registro-container {
+    background: #ffffff !important;
+    padding: 35px !important;
+    border-radius: 20px !important;
+    max-width: 900px !important;
+    margin: 20px auto !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid #eef2f7 !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
+/* Cabecera estilizada */
+.registro-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    margin-bottom: 2.5rem !important;
+    border-bottom: 2px solid #f8fafc !important;
+    padding-bottom: 20px !important;
+}
+
+.header-icon {
+    background: #2d5a27 !important;
+    color: white !important;
+    width: 56px !important;
+    height: 56px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 15px !important;
+    box-shadow: 0 5px 15px rgba(45, 90, 39, 0.2) !important;
+}
+
+/* Rejilla del formulario */
+.form-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
+}
+
+.field.full {
+    grid-column: span 2 !important;
+}
+
+.field label {
+    display: block !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    color: #475569 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    margin-bottom: 8px !important;
+}
+
+/* Cajas de entrada con iconos alineados */
+.input-box {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.inner-icon {
+    position: absolute !important;
+    left: 16px !important;
+    color: #94a3b8 !important;
+    pointer-events: none !important;
+}
+
+.input-box input, 
+.input-box select, 
+.input-box textarea {
+    width: 100% !important;
+    padding: 12px 16px 12px 48px !important; /* Espacio para el icono */
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    font-size: 0.95rem !important;
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+    transition: all 0.2s ease !important;
+    box-sizing: border-box !important;
+}
+
+.input-box input:focus, 
+.input-box select:focus, 
+.input-box textarea:focus {
+    outline: none !important;
+    border-color: #2d5a27 !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(45, 90, 39, 0.08) !important;
+}
+
+/* Sección de Objetos (Trazabilidad) */
+.section-title {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-top: 2px dashed #f1f5f9 !important;
+    padding-top: 1.5rem !important;
+    margin-top: 1rem !important;
+}
+
+.btn-add {
+    background: #f0fdf4 !important;
+    color: #166534 !important;
+    border: 1px solid #bbf7d0 !important;
+    padding: 8px 16px !important;
+    border-radius: 10px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: 0.2s !important;
+}
+
+.btn-add:hover { background: #dcfce7 !important; }
+
+/* Tarjetas de Objetos */
+.objetos-list {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+    gap: 1.5rem !important;
+}
+
+.objeto-card {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 14px !important;
+    padding: 16px !important;
+    position: relative !important;
+}
+
+.objeto-card-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    margin-bottom: 12px !important;
+    color: #64748b !important;
+    font-size: 0.8rem !important;
+}
+
+.objeto-card-body {
+    display: grid !important;
+    gap: 10px !important;
+}
+
+/* Inputs internos de la tarjeta */
+.objeto-card-body input {
+    padding: 8px 12px !important;
+    font-size: 0.85rem !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+}
+
+/* Botón Finalizar */
+.btn-save {
+    grid-column: span 2 !important;
+    background: #2d5a27 !important;
+    color: white !important;
+    padding: 16px !important;
+    border: none !important;
+    border-radius: 14px !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    margin-top: 1.5rem !important;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.btn-save:hover:not(:disabled) {
+    background: #23471e !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(45, 90, 39, 0.25) !important;
+}
+
+/* Responsividad */
+@media (max-width: 650px) {
+    .form-grid { grid-template-columns: 1fr !important; }
+    .field.full, .btn-save { grid-column: span 1 !important; }
+}

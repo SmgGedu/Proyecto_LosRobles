@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import MainLayout from './components/MainLayout';
 import ProtectedRoute from './components/ProtectedRoute';
+import RegistroVisita from './components/RegistroVisita';
 
 // Importamos tu nueva página "Torre de Control"
 import Inicio from './pages/Inicio';
@@ -16,14 +17,6 @@ const Activos = () => (
         <p>Aquí conectaremos la tabla con la base de datos de Azure.</p>
     </div>
 );
-
-const NuevoIngreso = () => (
-    <div style={{ padding: '20px' }}>
-        <h2>Registrar Nuevo Ingreso</h2>
-        <p>Formulario para capturar datos de visitas.</p>
-    </div>
-);
-
 function App() {
   return (
     <Router>
@@ -45,7 +38,7 @@ function App() {
           
           {/* Páginas que construiremos a continuación */}
           <Route path="activos" element={<Activos />} />
-          <Route path="nuevo-ingreso" element={<NuevoIngreso />} />
+          <Route path="nuevo-ingreso" element={<RegistroVisita />} />
         </Route>
 
         {/* Captura cualquier ruta inexistente y la manda al login */}
