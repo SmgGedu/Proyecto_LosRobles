@@ -1,0 +1,215 @@
+/* Contenedor principal */
+.admin-container {
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 20px;
+    max-width: 1000px;
+    margin: 20px auto;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Header */
+.admin-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #f8fafc;
+    padding-bottom: 20px;
+}
+
+.admin-header-icon {
+    background: #2d5a27;
+    color: white;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(45, 90, 39, 0.2);
+    flex-shrink: 0;
+}
+
+.admin-header-text h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.admin-header-text p {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+/* Grid de secciones */
+.admin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+}
+
+.admin-section h3 {
+    margin: 0 0 16px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Botones de operaciones */
+.admin-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-admin {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #2d5a27;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-admin:hover {
+    background: #23471e;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(45, 90, 39, 0.2);
+}
+
+/* Reportes */
+.reportes-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.field-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+}
+
+.periodo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.periodo-sep {
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.field-group .input-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.field-group .inner-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.field-group input,
+.field-group select {
+    width: 100%;
+    padding: 11px 14px 11px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 11px;
+    font-size: 0.88rem;
+    background-color: #ffffff;
+    color: #1e293b;
+    box-sizing: border-box;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field-group .input-box .inner-icon ~ input,
+.field-group .input-box .inner-icon ~ select {
+    padding-left: 40px;
+}
+
+.field-group input:focus,
+.field-group select:focus {
+    outline: none;
+    border-color: #2d5a27;
+    box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
+}
+
+.reportes-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.btn-reporte {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1.5px solid;
+    border-radius: 11px;
+    padding: 12px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-reporte:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-reporte.pdf {
+    background: #fff1f2;
+    border-color: #fecdd3;
+    color: #be123c;
+}
+
+.btn-reporte.pdf:hover:not(:disabled) {
+    background: #ffe4e6;
+}
+
+.btn-reporte.excel {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #15803d;
+}
+
+.btn-reporte.excel:hover:not(:disabled) {
+    background: #dcfce7;
+}
+
+/* Responsive */
+@media (max-width: 750px) {
+    .admin-container { padding: 20px; }
+    .admin-grid { grid-template-columns: 1fr; }
+    .periodo-row { flex-direction: column; align-items: stretch; }
+    .periodo-sep { display: none; }
+}

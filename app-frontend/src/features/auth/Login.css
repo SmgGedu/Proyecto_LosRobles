@@ -61,9 +61,9 @@
   color: #333;
 }
 
-/* 
-   CONFIGURACIÓN DE INPUTS 
-   Forzamos fondo blanco y texto negro 
+/*
+   CONFIGURACIÓN DE INPUTS
+   Forzamos fondo blanco y texto negro
 */
 .form-group input {
   width: 100%;
@@ -76,14 +76,14 @@
   box-sizing: border-box;
 }
 
-/* 
-   ELIMINAR ESTILOS DE AUTOCOMPLETADO 
-   Chrome/Edge aplican un fondo azul/gris por defecto. 
+/*
+   ELIMINAR ESTILOS DE AUTOCOMPLETADO
+   Chrome/Edge aplican un fondo azul/gris por defecto.
    Usamos una sombra interna (box-shadow) para "tapar" ese color.
 */
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px white inset !important;
     -webkit-text-fill-color: black !important;

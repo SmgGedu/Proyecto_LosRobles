@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+
 import { Users, UserCheck, LogIn, Clock } from 'lucide-react';
-import api from '../api/axiosConfig'; // Tu configuración de Axios
+import api from '../../api/axiosConfig';
 import './Inicio.css';
 
 const Inicio = () => {
@@ -11,6 +12,7 @@ const Inicio = () => {
         ultimoIngreso: '--:--'
     });
     const [loading, setLoading] = useState(true);
+    const username = localStorage.getItem('username') || 'Usuario';
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -42,7 +44,7 @@ const Inicio = () => {
     return (
         <div className="dashboard-home">
             <header className="home-header">
-                <h1>Bienvenido, Jhosua</h1>
+                <h1>Bienvenido, {username}</h1>
                 <p>Estado operativo actual del Condominio Los Robles.</p>
             </header>
 

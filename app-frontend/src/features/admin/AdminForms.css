@@ -1,0 +1,182 @@
+/* ── Contenedor de formularios de administración ── */
+.admin-form-container {
+    background: #ffffff;
+    padding: 32px;
+    border-radius: 20px;
+    max-width: 860px;
+    margin: 0 auto;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ── Cabecera ── */
+.registro-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.header-icon {
+    background: #2d5a27;
+    color: white;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(45, 90, 39, 0.2);
+}
+
+.header-text h2 {
+    margin: 0 0 2px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.header-text p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #94a3b8;
+}
+
+/* ── Mensaje de error ── */
+.form-error {
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+    color: #e11d48;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+}
+
+/* ── Grid del formulario ── */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.field.full {
+    grid-column: span 2;
+}
+
+/* ── Labels ── */
+.field label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+}
+
+/* ── Input box ── */
+.input-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inner-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.input-box input,
+.input-box select {
+    width: 100%;
+    padding: 11px 14px 11px 44px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 11px;
+    font-size: 0.9rem;
+    background-color: #f8fafc;
+    color: #1e293b;
+    transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+    box-sizing: border-box;
+    appearance: auto;
+}
+
+.input-box input:focus,
+.input-box select:focus {
+    outline: none;
+    border-color: #2d5a27;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
+}
+
+/* ── Botón submit ── */
+.btn-save {
+    grid-column: span 2;
+    background: #2d5a27;
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 13px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-save:hover:not(:disabled) {
+    background: #23471e;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(45, 90, 39, 0.25);
+}
+
+.btn-save:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* ── Spinner ── */
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Animaciones ── */
+@keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.anim-fade {
+    animation: fadeSlideDown 0.2s ease;
+}
+
+/* ── Responsive ── */
+@media (max-width: 620px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .field.full,
+    .btn-save {
+        grid-column: span 1;
+    }
+}

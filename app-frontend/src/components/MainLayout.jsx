@@ -1,17 +1,22 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
-import { 
-  Home, Users, ClipboardList, LogOut, Menu, ChevronLeft, ShieldCheck 
-} from 'lucide-react'; 
+import {
+  Home, Users, ClipboardList, LogOut, Menu, ChevronLeft, ShieldCheck, UserCog
+} from 'lucide-react';
 import './MainLayout.css';
 
 const MainLayout = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    const username = localStorage.getItem('username') || 'Usuario';
+    const role = localStorage.getItem('role');
+
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
         navigate('/login');
     };
 
@@ -20,6 +25,10 @@ const MainLayout = () => {
         { path: '/activos', name: 'Visitantes Activos', icon: <Users size={22}/> },
         { path: '/nuevo-ingreso', name: 'Registrar Ingreso', icon: <ClipboardList size={22}/> },
     ];
+
+    if (role === 'Administrador') {
+        menuItems.push({ path: '/admin', name: 'Panel de Administrador', icon: <UserCog size={22}/> });
+    }
 
     return (
         <div className={`dashboard-wrapper ${isCollapsed ? 'collapsed' : ''}`}>
@@ -37,10 +46,10 @@ const MainLayout = () => {
                 
                 <nav className="modern-nav">
                     {menuItems.map((item) => (
-                        <Link 
-                            key={item.path} 
-                            to={item.path} 
-                            className={`modern-nav-item ${location.pathname === item.path ? 'active' : ''}`}
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            className={`modern-nav-item ${location.pathname.startsWith(item.path) ? 'active' : ''}`}
                         >
                             <span className="icon">{item.icon}</span>
                             {!isCollapsed && <span className="text">{item.name}</span>}
@@ -64,8 +73,8 @@ const MainLayout = () => {
                         <span>Panel de Control de Seguridad</span>
                     </div>
                     <div className="user-profile">
-                        <div className="avatar">F</div>
-                        <span className="user-name">Jhosua Chacaltana</span>
+                        <div className="avatar">{username.charAt(0).toUpperCase()}</div>
+                        <span className="user-name">{username}</span>
                     </div>
                 </header>
                 <main className="modern-content">
