@@ -1,0 +1,24 @@
+# Copia este archivo como application.properties y define las variables de entorno,
+# o configura estas variables directamente en Azure App Service -> Configuration -> Application Settings.
+
+spring.application.name=api-backend
+
+# DB_URL ejemplo para Azure SQL Server:
+# jdbc:sqlserver://your-server.database.windows.net:1433;database=YOUR_DB;user=YOUR_USER@your-server;password=YOUR_PASSWORD;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+spring.datasource.url=${DB_URL}
+
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+spring.datasource.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+# Azure SQL (tier serverless) puede tardar ~30-60s en "despertar" tras estar pausada.
+spring.datasource.hikari.connection-timeout=60000
+spring.datasource.hikari.initialization-fail-timeout=-1
+spring.datasource.hikari.maximum-pool-size=5
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.SQLServerDialect
+
+# JWT_SECRET debe tener al menos 32 caracteres
+jwt.secret=${JWT_SECRET}

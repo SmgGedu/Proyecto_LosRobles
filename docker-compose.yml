@@ -1,0 +1,32 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: api-backend/Dockerfile.dev
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./api-backend/.env
+    volumes:
+      - .:/workspace
+      - maven-repo:/root/.m2
+    working_dir: /workspace/api-backend
+    command: sh mvnw spring-boot:run
+
+  frontend:
+    build:
+      context: .
+      dockerfile: app-frontend/Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/workspace
+      - frontend-node-modules:/workspace/app-frontend/node_modules
+    working_dir: /workspace/app-frontend
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    environment:
+      - VITE_API_URL=http://localhost:8080/api
+
+volumes:
+  maven-repo:
+  frontend-node-modules:
