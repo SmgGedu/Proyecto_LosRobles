@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/checkout
+    defaults:
+      run:
+        working-directory: api-backend
 
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: "${{ github.workspace }}/target/*.jar"
+          path: "${{ github.workspace }}/api-backend/target/*.jar"
 
   deploy:
     runs-on: ubuntu-latest
