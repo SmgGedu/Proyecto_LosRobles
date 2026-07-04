@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, UserPlus, Users, Building2, FileDown, FileSpreadsheet, Calendar, ListFilter } from 'lucide-react';
+import { ShieldCheck, UserPlus, Users, Building2, FileDown, FileSpreadsheet, Calendar, ListFilter, Gauge, Save } from 'lucide-react';
 import api from '../../api/axiosConfig';
 import './AdminPanel.css';
 
@@ -11,6 +11,41 @@ const AdminPanel = () => {
     const [hasta, setHasta] = useState(today);
     const [categoria, setCategoria] = useState('TODOS');
     const [descargando, setDescargando] = useState(null);
+
+    const [aforoMaximo, setAforoMaximo] = useState('');
+    const [tiempoMaximoVisitaMinutos, setTiempoMaximoVisitaMinutos] = useState('');
+    const [guardandoAforo, setGuardandoAforo] = useState(false);
+    const [mensajeAforo, setMensajeAforo] = useState(null);
+
+    useEffect(() => {
+        const cargarConfiguracion = async () => {
+            try {
+                const response = await api.get('/configuracion/aforo');
+                setAforoMaximo(response.data.aforoMaximo);
+                setTiempoMaximoVisitaMinutos(response.data.tiempoMaximoVisitaMinutos);
+            } catch (error) {
+                console.error('Error cargando configuración de aforo:', error);
+            }
+        };
+        cargarConfiguracion();
+    }, []);
+
+    const guardarConfiguracionAforo = async () => {
+        setGuardandoAforo(true);
+        setMensajeAforo(null);
+        try {
+            await api.put('/configuracion/aforo', {
+                aforoMaximo: Number(aforoMaximo),
+                tiempoMaximoVisitaMinutos: Number(tiempoMaximoVisitaMinutos),
+            });
+            setMensajeAforo({ tipo: 'ok', texto: 'Configuración guardada correctamente.' });
+        } catch (error) {
+            console.error('Error guardando configuración de aforo:', error);
+            setMensajeAforo({ tipo: 'error', texto: 'No se pudo guardar la configuración.' });
+        } finally {
+            setGuardandoAforo(false);
+        }
+    };
 
     const descargar = async (formato) => {
         if (!desde || !hasta) {
@@ -65,6 +100,53 @@ const AdminPanel = () => {
                         </button>
                         <button className="btn-admin" onClick={() => navigate('/admin/departamentos')}>
                             <Building2 size={20} /> Gestión de Departamentos
+                        </button>
+                    </div>
+                </section>
+
+                {/* ── Configuración de Aforo ── */}
+                <section className="admin-section">
+                    <h3>Configuración de Aforo</h3>
+                    <div className="reportes-form">
+                        <div className="field-group">
+                            <label>Aforo máximo (visitantes dentro a la vez)</label>
+                            <div className="input-box">
+                                <Gauge className="inner-icon" size={16} />
+                                <input
+                                    type="number"
+                                    min="1"
+                                    value={aforoMaximo}
+                                    onChange={(e) => setAforoMaximo(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="field-group">
+                            <label>Tiempo máximo de visita (minutos)</label>
+                            <div className="input-box">
+                                <Calendar className="inner-icon" size={16} />
+                                <input
+                                    type="number"
+                                    min="1"
+                                    value={tiempoMaximoVisitaMinutos}
+                                    onChange={(e) => setTiempoMaximoVisitaMinutos(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        {mensajeAforo && (
+                            <p style={{
+                                color: mensajeAforo.tipo === 'ok' ? '#15803d' : '#be123c',
+                                fontSize: '0.85rem',
+                                fontWeight: 600,
+                                margin: 0,
+                            }}>
+                                {mensajeAforo.texto}
+                            </p>
+                        )}
+
+                        <button className="btn-admin" disabled={guardandoAforo} onClick={guardarConfiguracionAforo}>
+                            <Save size={20} /> {guardandoAforo ? 'Guardando...' : 'Guardar Configuración'}
                         </button>
                     </div>
                 </section>

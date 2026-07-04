@@ -1,20 +1,27 @@
 import { useState, useEffect } from 'react';
-import { Users, Clock, Car, Home, RefreshCw, LogOut, Package, ShieldCheck, Truck, Star, QrCode } from 'lucide-react';
+import { Users, Clock, Car, Home, RefreshCw, LogOut, Package, ShieldCheck, Truck, Star, QrCode, AlertTriangle, MapPin } from 'lucide-react';
 import axios from '../../api/axiosConfig';
 import './VisitantesActivos.css';
+
+const REFRESCO_MS = 17000;
 
 const VisitantesActivos = () => {
     const [visitantes, setVisitantes] = useState([]);
     const [total, setTotal] = useState(0);
+    const [aforoMaximo, setAforoMaximo] = useState(0);
+    const [aforoExcedido, setAforoExcedido] = useState(false);
+    const [desglosePorZona, setDesglosePorZona] = useState([]);
     const [loading, setLoading] = useState(true);
     const [registrandoSalida, setRegistrandoSalida] = useState(null);
 
     const fetchActivos = async () => {
-        setLoading(true);
         try {
             const response = await axios.get('/accesos/activos');
             setVisitantes(response.data.visitantes || []);
             setTotal(response.data.totalEnEdificio || 0);
+            setAforoMaximo(response.data.aforoMaximo || 0);
+            setAforoExcedido(Boolean(response.data.aforoExcedido));
+            setDesglosePorZona(response.data.desglosePorZona || []);
         } catch (error) {
             console.error('Error cargando visitantes activos:', error);
         } finally {
@@ -23,11 +30,13 @@ const VisitantesActivos = () => {
     };
 
     useEffect(() => {
-    const cargar = async () => {
-        await fetchActivos();
-    };
-    cargar();
-}, []);
+        const cargar = async () => {
+            await fetchActivos();
+        };
+        cargar();
+        const intervalo = setInterval(cargar, REFRESCO_MS);
+        return () => clearInterval(intervalo);
+    }, []);
 
     const registrarSalida = async (id) => {
         setRegistrandoSalida(id);
@@ -49,6 +58,21 @@ const VisitantesActivos = () => {
         });
     };
 
+    const formatTranscurrido = (minutos) => {
+        if (minutos == null) return '—';
+        if (minutos < 60) return `${minutos} min`;
+        const horas = Math.floor(minutos / 60);
+        const resto = minutos % 60;
+        return `${horas}h ${resto}m`;
+    };
+
+    const ocupacionRatio = aforoMaximo > 0 ? total / aforoMaximo : 0;
+    const aforoBadgeClase = aforoExcedido
+        ? 'activos-badge--danger'
+        : ocupacionRatio >= 0.9
+            ? 'activos-badge--warning'
+            : '';
+
     return (
         <div className="activos-container">
             <div className="activos-header">
@@ -62,9 +86,9 @@ const VisitantesActivos = () => {
                     </div>
                 </div>
                 <div className="activos-header-right">
-                    <div className="activos-badge">
+                    <div className={`activos-badge ${aforoBadgeClase}`}>
                         <ShieldCheck size={16} />
-                        <span>{total} dentro ahora</span>
+                        <span>{total}{aforoMaximo > 0 ? ` / ${aforoMaximo}` : ''} dentro ahora</span>
                     </div>
                     <button className="btn-refresh" onClick={fetchActivos}>
                         <RefreshCw size={16} />
@@ -72,6 +96,25 @@ const VisitantesActivos = () => {
                     </button>
                 </div>
             </div>
+
+            {aforoExcedido && (
+                <div className="alerta-aforo">
+                    <AlertTriangle size={18} />
+                    Se superó el aforo máximo configurado ({aforoMaximo}).
+                </div>
+            )}
+
+            {desglosePorZona.length > 0 && (
+                <div className="zonas-row">
+                    {desglosePorZona.map((z) => (
+                        <div key={z.zona} className="zona-chip">
+                            <MapPin size={13} />
+                            <span>{z.zona || 'Sin zona'}</span>
+                            <strong>{z.cantidad}</strong>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             {loading ? (
                 <div className="activos-empty">
@@ -85,7 +128,7 @@ const VisitantesActivos = () => {
             ) : (
                 <div className="activos-lista">
                     {visitantes.map((v) => (
-                        <div key={v.id} className="visitante-card">
+                        <div key={v.id} className={`visitante-card ${v.excedeTiempoEsperado ? 'overstay' : ''}`}>
                             <div className="visitante-card-body">
                                 <div className="visitante-info">
                                     <div className="visitante-nombre-row">
@@ -105,6 +148,11 @@ const VisitantesActivos = () => {
                                                 <QrCode size={12} /> QR
                                             </span>
                                         )}
+                                        {v.excedeTiempoEsperado && (
+                                            <span className="badge-tipo overstay-badge">
+                                                <AlertTriangle size={12} /> Tiempo excedido
+                                            </span>
+                                        )}
                                     </div>
                                     <div className="visitante-dni">DNI: {v.dniVisitante}</div>
                                     <div className="visitante-meta">
@@ -113,6 +161,9 @@ const VisitantesActivos = () => {
                                         </span>
                                         <span className="meta-item">
                                             <Clock size={14} /> Ingreso: {formatHora(v.horaEntrada)}
+                                        </span>
+                                        <span className="meta-item">
+                                            <Clock size={14} /> Transcurrido: {formatTranscurrido(v.minutosTranscurridos)}
                                         </span>
                                         {v.placaVehiculo && (
                                             <span className="meta-item">

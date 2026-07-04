@@ -13,6 +13,9 @@ public class AccesoResponseDTO {
     private String dniVisitante;
     private String nombreAnfitrion;
     private String departamento;
+    private String zona;
+    private Long minutosTranscurridos;
+    private boolean excedeTiempoEsperado;
     private String nombreConserje;
     private String placaVehiculo;
     private String tipoIngreso;

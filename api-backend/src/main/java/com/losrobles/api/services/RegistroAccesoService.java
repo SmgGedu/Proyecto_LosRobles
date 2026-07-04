@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +32,7 @@ public class RegistroAccesoService {
     private final VisitanteRepository visitanteRepo;
     private final DepartamentoRepository departamentoRepo;
     private final EventoSeguridadRepository eventoSeguridadRepo;
+    private final ConfiguracionAforoService configuracionAforoService;
 
     /**
      * Registra entrada mediante QR validando la vinculación actual del residente
@@ -249,6 +252,39 @@ public class RegistroAccesoService {
         return registroRepo.countByEstadoAcceso("ACTIVO");
     }
 
+    /**
+     * Resumen para el panel de monitoreo en tiempo real (RF05): aforo total,
+     * desglose por zona/torre y la lista de visitantes activos.
+     */
+    public AforoResponseDTO obtenerAforoActual() {
+        List<RegistroAcceso> activos = registroRepo.findByEstadoAcceso("ACTIVO");
+
+        Map<String, Long> conteoPorZona = activos.stream()
+                .collect(Collectors.groupingBy(
+                        ra -> ra.getDepartamentoDestino() != null
+                                ? ra.getDepartamentoDestino().getBloqueTorre()
+                                : "Sin zona",
+                        Collectors.counting()));
+
+        List<AforoResponseDTO.ZonaAforoDTO> desglosePorZona = conteoPorZona.entrySet().stream()
+                .map(entry -> AforoResponseDTO.ZonaAforoDTO.builder()
+                        .zona(entry.getKey())
+                        .cantidad(entry.getValue())
+                        .build())
+                .collect(Collectors.toList());
+
+        int aforoMaximo = configuracionAforoService.obtenerAforoMaximo();
+        long total = activos.size();
+
+        return AforoResponseDTO.builder()
+                .totalEnEdificio(total)
+                .aforoMaximo(aforoMaximo)
+                .aforoExcedido(total > aforoMaximo)
+                .desglosePorZona(desglosePorZona)
+                .visitantes(activos.stream().map(this::mapToDTO).collect(Collectors.toList()))
+                .build();
+    }
+
     public List<AccesoResponseDTO> listarTodos() {
         return registroRepo.findAll().stream()
                 .map(this::mapToDTO).collect(Collectors.toList());
@@ -285,6 +321,14 @@ public class RegistroAccesoService {
         String infoDepartamento = ra.getDepartamentoDestino() != null
                 ? ra.getDepartamentoDestino().getBloqueTorre() + " - " + ra.getDepartamentoDestino().getNumeroDepa()
                 : "N/A";
+        String zona = ra.getDepartamentoDestino() != null
+                ? ra.getDepartamentoDestino().getBloqueTorre()
+                : "Sin zona";
+
+        boolean estaActivo = "ACTIVO".equals(ra.getEstadoAcceso());
+        long minutosTranscurridos = Duration.between(ra.getHoraIngreso(), FechaUtils.ahora()).toMinutes();
+        boolean excedeTiempoEsperado = estaActivo
+                && minutosTranscurridos > configuracionAforoService.obtenerTiempoMaximoVisita();
 
         return AccesoResponseDTO.builder()
                 .id(ra.getId())
@@ -292,6 +336,9 @@ public class RegistroAccesoService {
                 .dniVisitante(ra.getVisitante().getDni())
                 .nombreAnfitrion(nombreResidente)
                 .departamento(infoDepartamento)
+                .zona(zona)
+                .minutosTranscurridos(estaActivo ? minutosTranscurridos : null)
+                .excedeTiempoEsperado(excedeTiempoEsperado)
                 .nombreConserje(ra.getConserjeEnTurno().getNombres())
                 .tipoIngreso(ra.getTipoIngreso())
                 .tipoVisita(ra.getTipoVisita())

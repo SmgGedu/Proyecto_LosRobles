@@ -1,6 +1,7 @@
 package com.losrobles.api.repositories;
 
 import com.losrobles.api.models.RegistroAcceso;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +17,7 @@ public interface RegistroAccesoRepository extends JpaRepository<RegistroAcceso, 
             "ORDER BY r.horaIngreso DESC")
     List<RegistroAcceso> findForReporte(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta,
             @Param("tipoVisita") String tipoVisita);
+    @EntityGraph(attributePaths = "departamentoDestino")
     List<RegistroAcceso> findByEstadoAcceso(String estado);
 
     long countByEstadoAcceso(String estado);

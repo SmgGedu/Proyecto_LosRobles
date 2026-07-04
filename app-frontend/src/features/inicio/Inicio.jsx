@@ -66,7 +66,7 @@ const Inicio = () => {
                 <div className="recent-activity">
                     <h2>Movimientos Recientes</h2>
                     {/* Aquí podrías hacer otro fetch para la tabla si lo prefieres */}
-                    <p style={{color: '#64748b', fontSize: '0.9rem'}}>Sincronizado con el servidor en tiempo real.</p>
+                    <p style={{color: '#64748b', fontSize: '0.9rem'}}>Actualiza la página para ver los datos más recientes. Para monitoreo en vivo del aforo, revisa "Visitantes en el Edificio".</p>
                 </div>
 
                 <div className="info-side-card">

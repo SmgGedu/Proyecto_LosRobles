@@ -92,6 +92,63 @@
     color: #2d5a27;
 }
 
+/* Variantes de aforo en el badge principal */
+.activos-badge.activos-badge--warning {
+    background: #fffbeb;
+    color: #b45309;
+    border-color: #fde68a;
+}
+
+.activos-badge.activos-badge--danger {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+
+/* Alerta de aforo excedido */
+.alerta-aforo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Desglose por zona/torre */
+.zonas-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.zona-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.zona-chip svg {
+    color: #2d5a27;
+}
+
+.zona-chip strong {
+    color: #1e293b;
+}
+
 /* Estado vacío */
 .activos-empty {
     text-align: center;
@@ -131,6 +188,22 @@
 .visitante-card:hover {
     border-color: #2d5a27;
     box-shadow: 0 4px 12px rgba(45, 90, 39, 0.08);
+}
+
+.visitante-card.overstay {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.visitante-card.overstay:hover {
+    border-color: #e11d48;
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.1);
+}
+
+.badge-tipo.overstay-badge {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
 }
 
 .visitante-card-body {

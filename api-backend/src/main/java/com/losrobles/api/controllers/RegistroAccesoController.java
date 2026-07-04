@@ -1,6 +1,7 @@
 package com.losrobles.api.controllers;
 
 import com.losrobles.api.dto.AccesoResponseDTO;
+import com.losrobles.api.dto.AforoResponseDTO;
 import com.losrobles.api.dto.IngresoRequestDTO;
 import com.losrobles.api.services.RegistroAccesoService;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import com.losrobles.api.dto.RegistroCompletoRequest;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/accesos")
@@ -29,11 +28,8 @@ public class RegistroAccesoController {
 
     @GetMapping("/activos")
     @PreAuthorize("hasAnyAuthority('ROLE_Administrador', 'ROLE_Conserje')")
-    public ResponseEntity<Map<String, Object>> verAforoActual() {
-        Map<String, Object> reporte = new HashMap<>();
-        reporte.put("totalEnEdificio", registroService.contarVisitantesEnEdificio());
-        reporte.put("visitantes", registroService.obtenerVisitantesActivos());
-        return ResponseEntity.ok(reporte);
+    public ResponseEntity<AforoResponseDTO> verAforoActual() {
+        return ResponseEntity.ok(registroService.obtenerAforoActual());
     }
 
     @PostMapping("/ingreso-qr")
