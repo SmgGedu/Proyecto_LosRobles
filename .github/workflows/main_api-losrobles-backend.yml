@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+      - appmod/java-upgrade-20260501201624
   workflow_dispatch:
 
 jobs:
