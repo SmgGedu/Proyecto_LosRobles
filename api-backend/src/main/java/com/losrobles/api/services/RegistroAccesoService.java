@@ -81,6 +81,8 @@ public class RegistroAccesoService {
                     "Error de Seguridad: El residente anfitrión ya no pertenece a este departamento.");
         }
 
+        validarAforoDisponible(request.getQrHash(), invi.getVisitante().getDni(), conserje);
+
         RegistroAcceso nuevo = new RegistroAcceso();
         nuevo.setVisitante(invi.getVisitante());
         nuevo.setDepartamentoDestino(invi.getDepartamentoDestino());
@@ -150,6 +152,8 @@ public class RegistroAccesoService {
         Departamento depto = departamentoRepo.findById(request.getId_departamento_destino())
                 .orElseThrow(() -> new RuntimeException("Error: El departamento destino no existe."));
 
+        validarAforoDisponible(null, visitante.getDni(), conserje);
+
         RegistroAcceso nuevo = new RegistroAcceso();
         nuevo.setVisitante(visitante);
         nuevo.setDepartamentoDestino(depto);
@@ -196,6 +200,21 @@ public class RegistroAccesoService {
                 .detalle(detalle)
                 .build();
         eventoSeguridadRepo.save(evento);
+    }
+
+    /**
+     * Bloquea el registro de un nuevo ingreso si el edificio ya se encuentra en
+     * el aforo máximo configurado (RF05).
+     */
+    private void validarAforoDisponible(String codigoQr, String dniVisitante, Usuario conserje) {
+        int aforoMaximo = configuracionAforoService.obtenerAforoMaximo();
+        long activos = registroRepo.countByEstadoAcceso("ACTIVO");
+        if (activos >= aforoMaximo) {
+            registrarEvento("AFORO_EXCEDIDO", codigoQr, dniVisitante, conserje,
+                    "Intento de ingreso con el edificio en su aforo máximo (" + aforoMaximo + ").");
+            throw new RuntimeException(
+                    "Error: Se alcanzó el aforo máximo permitido (" + aforoMaximo + "). No se puede registrar el ingreso.");
+        }
     }
 
     /**
