@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-    Users, UserCheck, LogIn, Clock, ClipboardList, ShieldCheck,
-    UserCog, ArrowRight, Cloud, Database, MapPin, Home
+    Users, UserCheck, LogIn, Clock, ShieldCheck,
+    ArrowRight, Cloud, Database, MapPin, Home
 } from 'lucide-react';
 import api from '../../api/axiosConfig';
 import './Inicio.css';
@@ -18,6 +18,23 @@ const getSaludo = () => {
     return (SALUDOS.find(s => hora < s.max) || SALUDOS[SALUDOS.length - 1]).texto;
 };
 
+const formatRelativo = (horaISO) => {
+    if (!horaISO) return null;
+    const diffMin = Math.max(0, Math.floor((Date.now() - new Date(horaISO).getTime()) / 60000));
+    if (diffMin < 1) return 'Justo ahora';
+    if (diffMin < 60) return `Hace ${diffMin} min`;
+    const diffHoras = Math.floor(diffMin / 60);
+    if (diffHoras < 24) return `Hace ${diffHoras} h`;
+    return `Hace ${Math.floor(diffHoras / 24)} d`;
+};
+
+const formatFechaCorta = (horaISO) => {
+    if (!horaISO) return null;
+    return new Date(horaISO).toLocaleString('es-PE', {
+        day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+    });
+};
+
 const Inicio = () => {
     const [stats, setStats] = useState({
         visitantesHoy: 0,
@@ -28,7 +45,6 @@ const Inicio = () => {
     const [movimientos, setMovimientos] = useState([]);
     const [loading, setLoading] = useState(true);
     const username = localStorage.getItem('username') || 'Usuario';
-    const role = localStorage.getItem('role');
 
     useEffect(() => {
         const fetchDatos = async () => {
@@ -53,25 +69,19 @@ const Inicio = () => {
         fetchDatos();
     }, []);
 
+    // Refresca los textos relativos ("hace X min") sin volver a llamar a la API.
+    const [, forceTick] = useState(0);
+    useEffect(() => {
+        const id = setInterval(() => forceTick(t => t + 1), 60000);
+        return () => clearInterval(id);
+    }, []);
+
     const formatHora = (horaISO) => {
         if (!horaISO) return '—';
         return new Date(horaISO).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
     };
 
-    const cards = [
-        { label: 'Visitantes Hoy', value: stats.visitantesHoy, icon: <LogIn size={22}/>, color: '#3b82f6' },
-        { label: 'Activos Ahora', value: stats.activosAhora, icon: <UserCheck size={22}/>, color: '#22c55e' },
-        { label: 'Total Residentes', value: stats.totalResidentes, icon: <Users size={22}/>, color: '#6366f1' },
-        { label: 'Último Ingreso', value: stats.ultimoIngreso, icon: <Clock size={22}/>, color: '#f59e0b' },
-    ];
-
-    const accesosRapidos = [
-        { path: '/nuevo-ingreso', label: 'Registrar Ingreso', icon: <ClipboardList size={20}/> },
-        { path: '/activos', label: 'Visitantes Activos', icon: <Users size={20}/> },
-    ];
-    if (role === 'Administrador') {
-        accesosRapidos.push({ path: '/admin', label: 'Panel de Administrador', icon: <UserCog size={20}/> });
-    }
+    const ultimoMovimiento = movimientos[0];
 
     if (loading) {
         return (
@@ -97,27 +107,53 @@ const Inicio = () => {
             </header>
 
             <div className="stats-grid">
-                {cards.map((card, index) => (
-                    <div key={index} className="stat-card" style={{ '--card-color': card.color }}>
-                        <div className="stat-icon" style={{ backgroundColor: card.color + '1a', color: card.color }}>
-                            {card.icon}
-                        </div>
-                        <div className="stat-info">
-                            <h3>{card.value}</h3>
-                            <p>{card.label}</p>
-                        </div>
+                <div className="stat-card" style={{ '--card-color': '#3b82f6' }}>
+                    <div className="stat-icon" style={{ backgroundColor: '#3b82f61a', color: '#3b82f6' }}>
+                        <LogIn size={22}/>
                     </div>
-                ))}
-            </div>
+                    <div className="stat-info">
+                        <h3>{stats.visitantesHoy}</h3>
+                        <p>Visitantes Hoy</p>
+                        <span className="stat-caption">Registrados desde la medianoche</span>
+                    </div>
+                </div>
 
-            <div className="quick-actions">
-                {accesosRapidos.map((accion) => (
-                    <Link key={accion.path} to={accion.path} className="quick-action-btn">
-                        <span className="quick-action-icon">{accion.icon}</span>
-                        <span>{accion.label}</span>
-                        <ArrowRight size={16} className="quick-action-arrow" />
-                    </Link>
-                ))}
+                <div className="stat-card" style={{ '--card-color': '#22c55e' }}>
+                    <div className="stat-icon" style={{ backgroundColor: '#22c55e1a', color: '#22c55e' }}>
+                        <UserCheck size={22}/>
+                    </div>
+                    <div className="stat-info">
+                        <h3>{stats.activosAhora}</h3>
+                        <p>Activos Ahora</p>
+                        <span className="stat-caption">Dentro del condominio en este momento</span>
+                    </div>
+                </div>
+
+                <div className="stat-card" style={{ '--card-color': '#6366f1' }}>
+                    <div className="stat-icon" style={{ backgroundColor: '#6366f11a', color: '#6366f1' }}>
+                        <Users size={22}/>
+                    </div>
+                    <div className="stat-info">
+                        <h3>{stats.totalResidentes}</h3>
+                        <p>Total Residentes</p>
+                        <span className="stat-caption">Registrados en el sistema</span>
+                    </div>
+                </div>
+
+                <div className="stat-card stat-card--highlight" style={{ '--card-color': '#f59e0b' }}>
+                    <div className="stat-icon" style={{ backgroundColor: '#f59e0b1a', color: '#f59e0b' }}>
+                        <Clock size={22}/>
+                    </div>
+                    <div className="stat-info">
+                        <h3>{ultimoMovimiento ? formatRelativo(ultimoMovimiento.horaEntrada) : stats.ultimoIngreso}</h3>
+                        <p>Último Ingreso</p>
+                        <span className="stat-caption">
+                            {ultimoMovimiento
+                                ? `${ultimoMovimiento.nombreVisitante} · ${formatFechaCorta(ultimoMovimiento.horaEntrada)}`
+                                : 'Sin movimientos registrados'}
+                        </span>
+                    </div>
+                </div>
             </div>
 
             <div className="dashboard-main-content">
