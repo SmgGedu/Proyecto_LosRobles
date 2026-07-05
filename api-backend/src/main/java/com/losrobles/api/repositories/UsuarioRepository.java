@@ -25,6 +25,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
             "AND (u.nombres LIKE %:filtro% OR u.apellidos LIKE %:filtro%)")
     List<Usuario> buscarResidentePorNombre(@Param("filtro") String filtro);
 
-    @Query("SELECT COUNT(u) FROM Usuario u WHERE u.rol.id = 3")
+    @Query("SELECT COUNT(u) FROM Usuario u WHERE u.rol.id = 3 AND u.estado = true")
     Long contarResidentes();
 }
