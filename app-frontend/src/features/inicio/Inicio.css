@@ -2,23 +2,49 @@
     animation: fadeIn 0.5s ease;
 }
 
+/* ==========================================================================
+   CABECERA
+   ========================================================================== */
+.home-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
 .home-header h1 {
     font-size: 1.8rem;
     color: #1e293b;
     margin-bottom: 5px;
+    font-weight: 700;
 }
 
 .home-header p {
     color: #64748b;
-    margin-bottom: 2rem;
+    margin: 0;
 }
 
-/* Rejilla de estadísticas */
+.home-header-date {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px solid #d1fae5;
+    color: #166534;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 999px;
+    text-transform: capitalize;
+}
+
+/* ==========================================================================
+   REJILLA DE ESTADÍSTICAS
+   ========================================================================== */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .stat-card {
@@ -30,11 +56,30 @@
     gap: 1rem;
     border: 1px solid #f1f5f9;
     box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--card-color, #22c55e);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0,0,0,0.12);
 }
 
 .stat-icon {
     width: 50px;
     height: 50px;
+    min-width: 50px;
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -42,9 +87,10 @@
 }
 
 .stat-info h3 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     margin: 0;
     color: #0f172a;
+    font-weight: 700;
 }
 
 .stat-info p {
@@ -53,7 +99,49 @@
     color: #64748b;
 }
 
-/* Contenido Principal */
+/* ==========================================================================
+   ACCESOS RÁPIDOS
+   ========================================================================== */
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--sidebar-bg, #1e3a1a);
+    color: #f0fdf4;
+    padding: 12px 18px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition, all 0.25s ease);
+    box-shadow: 0 4px 10px rgba(30, 58, 26, 0.15);
+}
+
+.quick-action-btn:hover {
+    background: var(--sidebar-hover, #2a4d25);
+    transform: translateY(-2px);
+}
+
+.quick-action-icon {
+    display: flex;
+    color: var(--accent-color, #4ade80);
+}
+
+.quick-action-arrow {
+    margin-left: auto;
+    opacity: 0.6;
+}
+
+/* ==========================================================================
+   CONTENIDO PRINCIPAL
+   ========================================================================== */
 .dashboard-main-content {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -67,6 +155,38 @@
     border: 1px solid #f1f5f9;
 }
 
+.recent-activity-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.recent-activity-header h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #1e293b;
+}
+
+.ver-todos-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #166534;
+    text-decoration: none;
+}
+
+.ver-todos-link:hover {
+    text-decoration: underline;
+}
+
+.recent-activity-empty {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
 .recent-activity table {
     width: 100%;
     border-collapse: collapse;
@@ -76,7 +196,9 @@
 .recent-activity th {
     text-align: left;
     padding: 12px;
-    font-size: 0.85rem;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
     color: #94a3b8;
     border-bottom: 1px solid #f1f5f9;
 }
@@ -85,8 +207,62 @@
     padding: 12px;
     font-size: 0.9rem;
     border-bottom: 1px solid #f8fafc;
+    color: #334155;
 }
 
+.recent-activity tbody tr:hover {
+    background: #f8fafc;
+}
+
+.visitante-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.visitante-avatar {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border-radius: 50%;
+    background: #ecfdf5;
+    color: #166534;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.depto-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #64748b;
+}
+
+.estado-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.estado-badge.activo {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.estado-badge.finalizado {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* ==========================================================================
+   TARJETA LATERAL DE ESTADO
+   ========================================================================== */
 .info-side-card {
     background: #f8fafc;
     padding: 1.5rem;
@@ -94,17 +270,115 @@
     border: 1px solid #e2e8f0;
 }
 
-.dot {
-    height: 10px;
-    width: 10px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
+.info-side-card h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+    color: #1e293b;
 }
 
-.dot.online { background-color: #22c55e; }
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: #334155;
+    padding: 8px 0;
+}
+
+.status-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+}
+
+.status-icon.online {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-item span:nth-child(2) {
+    flex: 1;
+}
+
+.dot {
+    height: 9px;
+    width: 9px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot.online {
+    background-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+}
+
+.info-side-card hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 1rem 0;
+}
+
+.sede-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #475569;
+    font-size: 0.88rem;
+}
+
+.sede-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 1rem;
+    background: var(--sidebar-bg, #1e3a1a);
+    color: #f0fdf4;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+}
+
+/* ==========================================================================
+   SKELETON DE CARGA
+   ========================================================================== */
+.skeleton-header {
+    height: 46px;
+    width: 320px;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 37%, #f1f5f9 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+}
+
+.skeleton-card {
+    height: 88px;
+    border-radius: 15px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 37%, #f1f5f9 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width: 900px) {
+    .dashboard-main-content {
+        grid-template-columns: 1fr;
+    }
 }
