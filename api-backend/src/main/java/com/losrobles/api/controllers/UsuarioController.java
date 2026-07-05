@@ -62,6 +62,12 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/residentes-disponibles")
+    @PreAuthorize("hasAuthority('ROLE_Administrador')")
+    public ResponseEntity<List<ResidenteDTO>> residentesDisponibles() {
+        return ResponseEntity.ok(usuarioService.listarResidentesDisponibles());
+    }
+
     @GetMapping("/buscar-residente")
     @PreAuthorize("hasAnyAuthority('ROLE_Administrador', 'ROLE_Conserje')")
     public ResponseEntity<List<ResidenteDTO>> buscarResidente(@RequestParam String nombre) {

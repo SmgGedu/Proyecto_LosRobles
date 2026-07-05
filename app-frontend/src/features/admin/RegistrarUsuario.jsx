@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
     UserPlus, User, Mail, Lock, CreditCard, Phone, ShieldCheck, Home, CheckCircle, AtSign
 } from 'lucide-react';
@@ -8,6 +8,8 @@ import './AdminForms.css';
 
 const RegistrarUsuario = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const departamentoPreseleccionado = location.state?.departamentoId ?? '';
     const initialFormState = {
         nombres: '',
         apellidos: '',
@@ -17,7 +19,7 @@ const RegistrarUsuario = () => {
         dni: '',
         telefono: '',
         rolId: '',
-        departamentoId: '',
+        departamentoId: departamentoPreseleccionado ? String(departamentoPreseleccionado) : '',
     };
 
     const [formData, setFormData] = useState(initialFormState);
@@ -28,11 +30,20 @@ const RegistrarUsuario = () => {
 
     useEffect(() => {
         api.get('/roles')
-            .then(r => setRoles(r.data))
+            .then(r => {
+                setRoles(r.data);
+                if (departamentoPreseleccionado) {
+                    const rolResidente = r.data.find(rol => rol.nombreRol?.trim().toLowerCase() === 'residente');
+                    if (rolResidente) {
+                        setFormData(prev => ({ ...prev, rolId: rolResidente.id }));
+                    }
+                }
+            })
             .catch(e => console.error('Error cargando roles:', e));
         api.get('/departamentos')
             .then(r => setDepartamentos(r.data))
             .catch(e => console.error('Error cargando departamentos:', e));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const rolSeleccionado = roles.find(r => String(r.id) === String(formData.rolId));
@@ -77,6 +88,12 @@ const RegistrarUsuario = () => {
                     <p>Condominio Los Robles | Alta de personal y residentes</p>
                 </div>
             </header>
+
+            {location.state?.departamentoLabel && (
+                <div className="form-hint">
+                    <Home size={16} /> Registrando residente para el departamento <strong>{location.state.departamentoLabel}</strong>.
+                </div>
+            )}
 
             {error && <div className="form-error">{error}</div>}
 

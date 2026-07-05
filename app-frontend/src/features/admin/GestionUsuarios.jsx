@@ -40,10 +40,14 @@ const GestionUsuarios = () => {
     }, [usuarios, busqueda, filtroRol]);
 
     const cambiarEstado = async (usuario, estado) => {
+        if (!estado && usuario.departamentoId &&
+            !window.confirm(`¿Dar de baja a ${usuario.nombres} ${usuario.apellidos}? Esto también liberará su departamento (${usuario.departamentoNumero}${usuario.departamentoTorre ? ` - Torre ${usuario.departamentoTorre}` : ''}).`)) {
+            return;
+        }
         setProcesando(usuario.id);
         try {
-            await api.put(`/usuarios/${usuario.id}/estado`, { estado });
-            setUsuarios(prev => prev.map(u => u.id === usuario.id ? { ...u, estado } : u));
+            const res = await api.put(`/usuarios/${usuario.id}/estado`, { estado });
+            setUsuarios(prev => prev.map(u => u.id === usuario.id ? res.data : u));
         } catch (error) {
             console.error('Error cambiando estado:', error);
             alert('❌ No se pudo actualizar el estado del usuario.');

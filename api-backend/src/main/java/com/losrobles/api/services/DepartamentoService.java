@@ -4,6 +4,7 @@ import com.losrobles.api.dto.DepartamentoResponseDTO;
 import com.losrobles.api.models.Departamento;
 import com.losrobles.api.models.Usuario;
 import com.losrobles.api.repositories.DepartamentoRepository;
+import com.losrobles.api.repositories.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 public class DepartamentoService {
 
     private final DepartamentoRepository departamentoRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public List<Departamento> findAll() {
         return departamentoRepository.findAll();
@@ -52,13 +54,46 @@ public class DepartamentoService {
         return mapToDTO(depto);
     }
 
+    /**
+     * Asigna un residente ya registrado (sin departamento previo) a un
+     * departamento libre.
+     */
+    @Transactional
+    public DepartamentoResponseDTO asignar(Integer deptoId, Integer usuarioId) {
+        Departamento depto = departamentoRepository.findById(deptoId)
+                .orElseThrow(() -> new IllegalArgumentException("Error: Departamento no encontrado."));
+        if (depto.getResidentes() != null && !depto.getResidentes().isEmpty()) {
+            throw new IllegalArgumentException("Error: El departamento ya tiene un residente asignado.");
+        }
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new IllegalArgumentException("Error: Usuario no encontrado."));
+        if (usuario.getRol() == null || usuario.getRol().getId() != 3) {
+            throw new IllegalArgumentException("Error: Solo se puede asignar como residente a un usuario con rol Residente.");
+        }
+        if (usuario.getDepartamento() != null) {
+            throw new IllegalArgumentException("Error: El usuario ya tiene un departamento asignado. Libéralo primero.");
+        }
+        usuario.setDepartamento(depto);
+        usuarioRepository.save(usuario);
+        depto.getResidentes().add(usuario);
+        return mapToDTO(depto);
+    }
+
     private DepartamentoResponseDTO mapToDTO(Departamento d) {
         String residente = "No tiene";
         String estado = "Libre";
+        Integer residenteId = null;
+        String residenteDni = null;
+        String residenteTelefono = null;
+        String residenteEmail = null;
         if (d.getResidentes() != null && !d.getResidentes().isEmpty()) {
             Usuario r = d.getResidentes().get(0);
             residente = r.getNombres() + " " + r.getApellidos();
             estado = "Ocupado";
+            residenteId = r.getId();
+            residenteDni = r.getDni();
+            residenteTelefono = r.getTelefono();
+            residenteEmail = r.getEmail();
         }
         return DepartamentoResponseDTO.builder()
                 .id(d.getId())
@@ -66,6 +101,10 @@ public class DepartamentoService {
                 .numeroDepa(d.getNumeroDepa())
                 .residente(residente)
                 .estado(estado)
+                .residenteId(residenteId)
+                .residenteDni(residenteDni)
+                .residenteTelefono(residenteTelefono)
+                .residenteEmail(residenteEmail)
                 .build();
     }
 }

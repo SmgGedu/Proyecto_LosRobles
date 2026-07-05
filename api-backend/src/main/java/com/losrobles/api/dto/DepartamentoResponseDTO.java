@@ -11,4 +11,8 @@ public class DepartamentoResponseDTO {
     private String numeroDepa;
     private String residente; // Nombre completo del residente o "No tiene"
     private String estado; // "Ocupado" u "Libre"
+    private Integer residenteId;
+    private String residenteDni;
+    private String residenteTelefono;
+    private String residenteEmail;
 }

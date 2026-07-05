@@ -27,4 +27,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     @Query("SELECT COUNT(u) FROM Usuario u WHERE u.rol.id = 3 AND u.estado = true")
     Long contarResidentes();
+
+    @Query("SELECT u FROM Usuario u WHERE u.rol.id = 3 AND u.departamento IS NULL AND u.estado = true")
+    List<Usuario> buscarResidentesSinDepartamento();
 }

@@ -37,30 +37,32 @@ public class UsuarioService {
      */
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> findAllConDetalle() {
-        return usuarioRepository.findAll().stream().map(u -> {
-            UsuarioResponseDTO.UsuarioResponseDTOBuilder dto = UsuarioResponseDTO.builder()
-                    .id(u.getId())
-                    .nombres(u.getNombres())
-                    .apellidos(u.getApellidos())
-                    .dni(u.getDni())
-                    .telefono(u.getTelefono())
-                    .username(u.getUsername())
-                    .email(u.getEmail())
-                    .estado(u.getEstado());
+        return usuarioRepository.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
 
-            if (u.getRol() != null) {
-                dto.rolId(u.getRol().getId()).rolNombre(u.getRol().getNombreRol());
-            }
+    private UsuarioResponseDTO mapToDTO(Usuario u) {
+        UsuarioResponseDTO.UsuarioResponseDTOBuilder dto = UsuarioResponseDTO.builder()
+                .id(u.getId())
+                .nombres(u.getNombres())
+                .apellidos(u.getApellidos())
+                .dni(u.getDni())
+                .telefono(u.getTelefono())
+                .username(u.getUsername())
+                .email(u.getEmail())
+                .estado(u.getEstado());
 
-            Departamento depto = u.getDepartamento();
-            if (depto != null) {
-                dto.departamentoId(depto.getId())
-                        .departamentoNumero(depto.getNumeroDepa())
-                        .departamentoTorre(depto.getBloqueTorre());
-            }
+        if (u.getRol() != null) {
+            dto.rolId(u.getRol().getId()).rolNombre(u.getRol().getNombreRol());
+        }
 
-            return dto.build();
-        }).collect(Collectors.toList());
+        Departamento depto = u.getDepartamento();
+        if (depto != null) {
+            dto.departamentoId(depto.getId())
+                    .departamentoNumero(depto.getNumeroDepa())
+                    .departamentoTorre(depto.getBloqueTorre());
+        }
+
+        return dto.build();
     }
 
     /**
@@ -98,12 +100,21 @@ public class UsuarioService {
 
     /**
      * Activa o da de baja a un usuario (login bloqueado cuando estado = false).
+     * Se mapea a DTO dentro de la transacción por la misma razón que
+     * findAllConDetalle: evitar LazyInitializationException al serializar el
+     * departamento (relación LAZY) fuera de la sesión de Hibernate.
      */
-    public Usuario cambiarEstado(Integer id, boolean estado) {
+    @Transactional
+    public UsuarioResponseDTO cambiarEstado(Integer id, boolean estado) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Error: Usuario no encontrado."));
         usuario.setEstado(estado);
-        return usuarioRepository.save(usuario);
+        if (!estado) {
+            // Al dar de baja se libera también su departamento, para que quede
+            // disponible de inmediato para otro residente.
+            usuario.setDepartamento(null);
+        }
+        return mapToDTO(usuarioRepository.save(usuario));
     }
 
     /**
@@ -123,6 +134,21 @@ public class UsuarioService {
                     "Error: No se puede eliminar el usuario porque tiene registros asociados " +
                             "(accesos, dispositivos, invitaciones u otros). Mantenlo dado de baja en su lugar.");
         }
+    }
+
+    /**
+     * Lista residentes activos que aún no tienen un departamento asignado,
+     * para ofrecerlos como candidatos al asignar un departamento libre.
+     */
+    @Transactional(readOnly = true)
+    public List<ResidenteDTO> listarResidentesDisponibles() {
+        return usuarioRepository.buscarResidentesSinDepartamento().stream()
+                .map(u -> new ResidenteDTO(
+                        u.getId(),
+                        u.getNombres() + " " + u.getApellidos(),
+                        "Sin departamento asignado",
+                        null))
+                .collect(Collectors.toList());
     }
 
     public List<ResidenteDTO> buscarResidente(String nombre) {

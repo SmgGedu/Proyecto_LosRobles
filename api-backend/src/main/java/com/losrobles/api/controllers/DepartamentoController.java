@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/departamentos")
@@ -48,6 +49,20 @@ public class DepartamentoController {
     public ResponseEntity<?> liberar(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(departamentoService.liberar(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/asignar")
+    @PreAuthorize("hasAuthority('ROLE_Administrador')")
+    public ResponseEntity<?> asignar(@PathVariable Integer id, @RequestBody Map<String, Integer> body) {
+        Integer usuarioId = body.get("usuarioId");
+        if (usuarioId == null) {
+            return ResponseEntity.badRequest().body("Error: Debe indicar el campo 'usuarioId'.");
+        }
+        try {
+            return ResponseEntity.ok(departamentoService.asignar(id, usuarioId));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
