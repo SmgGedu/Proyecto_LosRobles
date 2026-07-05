@@ -72,6 +72,10 @@ const VisitantesActivos = () => {
         : ocupacionRatio >= 0.9
             ? 'activos-badge--warning'
             : '';
+    const estadoAforo = aforoExcedido ? 'danger' : ocupacionRatio >= 0.9 ? 'warning' : 'good';
+    const porcentajeAforo = aforoMaximo > 0 ? Math.min(100, Math.round(ocupacionRatio * 100)) : 0;
+    const zonasOrdenadas = [...desglosePorZona].sort((a, b) => b.cantidad - a.cantidad);
+    const maxZona = zonasOrdenadas.length > 0 ? Math.max(...zonasOrdenadas.map((z) => z.cantidad)) : 0;
 
     return (
         <div className="activos-container">
@@ -104,13 +108,40 @@ const VisitantesActivos = () => {
                 </div>
             )}
 
-            {desglosePorZona.length > 0 && (
-                <div className="zonas-row">
-                    {desglosePorZona.map((z) => (
-                        <div key={z.zona} className="zona-chip">
-                            <MapPin size={13} />
-                            <span>{z.zona || 'Sin zona'}</span>
-                            <strong>{z.cantidad}</strong>
+            {aforoMaximo > 0 && (
+                <div className="aforo-meter">
+                    <div className="aforo-meter-label">
+                        <span>Aforo actual</span>
+                        <span className="aforo-meter-value">
+                            {total} / {aforoMaximo}
+                            <span className="aforo-meter-pct"> ({porcentajeAforo}%)</span>
+                        </span>
+                    </div>
+                    <div className={`aforo-meter-track aforo-meter-track--${estadoAforo}`}>
+                        <div
+                            className={`aforo-meter-fill aforo-meter-fill--${estadoAforo}`}
+                            style={{ width: `${porcentajeAforo}%` }}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {zonasOrdenadas.length > 0 && (
+                <div className="zonas-chart">
+                    <div className="zonas-chart-title">
+                        <MapPin size={13} />
+                        Aforo por zona
+                    </div>
+                    {zonasOrdenadas.map((z) => (
+                        <div key={z.zona} className="zona-bar-row">
+                            <span className="zona-bar-label">{z.zona || 'Sin zona'}</span>
+                            <div className="zona-bar-track">
+                                <div
+                                    className="zona-bar-fill"
+                                    style={{ width: `${maxZona > 0 ? (z.cantidad / maxZona) * 100 : 0}%` }}
+                                />
+                            </div>
+                            <span className="zona-bar-value">{z.cantidad}</span>
                         </div>
                     ))}
                 </div>

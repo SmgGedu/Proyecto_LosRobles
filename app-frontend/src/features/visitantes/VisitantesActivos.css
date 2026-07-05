@@ -120,33 +120,132 @@
     font-weight: 600;
 }
 
-/* Desglose por zona/torre */
-.zonas-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+/* Meter de aforo actual vs máximo */
+.aforo-meter {
     margin-bottom: 1.5rem;
 }
 
-.zona-chip {
+.aforo-meter-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
+}
+
+.aforo-meter-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.aforo-meter-pct {
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+.aforo-meter-track {
+    height: 16px;
+    border-radius: 999px;
+    background: #dcfce7;
+    overflow: hidden;
+}
+
+.aforo-meter-track--warning {
+    background: #fef3c7;
+}
+
+.aforo-meter-track--danger {
+    background: #fecaca;
+}
+
+.aforo-meter-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: #2d5a27;
+    transition: width 0.4s ease;
+}
+
+.aforo-meter-fill--warning {
+    background: #b45309;
+}
+
+.aforo-meter-fill--danger {
+    background: #b91c1c;
+}
+
+/* Gráfico de barras: aforo por zona/torre */
+.zonas-chart {
+    margin-bottom: 1.5rem;
+    padding: 16px 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+}
+
+.zonas-chart-title {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: #f8fafc;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 999px;
-    padding: 6px 14px;
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 700;
     color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 14px;
 }
 
-.zona-chip svg {
+.zonas-chart-title svg {
     color: #2d5a27;
 }
 
-.zona-chip strong {
+.zona-bar-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 30px;
+    align-items: center;
+    gap: 10px;
+}
+
+.zona-bar-row + .zona-bar-row {
+    margin-top: 10px;
+}
+
+.zona-bar-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.zona-bar-track {
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.zona-bar-fill {
+    height: 100%;
+    background: #2d5a27;
+    border-radius: 0 4px 4px 0;
+    min-width: 4px;
+    transition: width 0.4s ease;
+}
+
+.zona-bar-value {
+    font-size: 0.8rem;
+    font-weight: 700;
     color: #1e293b;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
 }
 
 /* Estado vacío */
@@ -333,4 +432,5 @@
     .activos-header { flex-direction: column; align-items: flex-start; }
     .visitante-card-body { flex-direction: column; align-items: flex-start; }
     .btn-salida { width: 100%; justify-content: center; }
+    .zona-bar-row { grid-template-columns: 72px 1fr 28px; gap: 8px; }
 }
