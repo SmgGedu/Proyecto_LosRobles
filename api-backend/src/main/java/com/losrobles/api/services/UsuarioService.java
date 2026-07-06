@@ -40,6 +40,17 @@ public class UsuarioService {
         return usuarioRepository.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
+    /**
+     * Perfil del usuario autenticado (nombres, rol, departamento propio),
+     * usado por la app móvil para prellenar el residente/conserje logueado.
+     */
+    @Transactional(readOnly = true)
+    public UsuarioResponseDTO obtenerPerfilPropio(String username) {
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Error: Usuario no encontrado."));
+        return mapToDTO(usuario);
+    }
+
     private UsuarioResponseDTO mapToDTO(Usuario u) {
         UsuarioResponseDTO.UsuarioResponseDTOBuilder dto = UsuarioResponseDTO.builder()
                 .id(u.getId())

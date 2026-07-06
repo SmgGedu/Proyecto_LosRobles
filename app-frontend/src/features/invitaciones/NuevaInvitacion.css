@@ -1,0 +1,153 @@
+.invitacion-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.invitacion-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.invitacion-header-icon {
+    background: #2d5a27;
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.invitacion-header h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.invitacion-header p {
+    margin: 2px 0 0;
+    font-size: 0.82rem;
+    color: #94a3b8;
+}
+
+.invitacion-depto {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.invitacion-error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.invitacion-empty {
+    background: #ffffff;
+    border: 2px dashed #e2e8f0;
+    border-radius: 14px;
+    padding: 40px 20px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+.invitacion-empty--warning {
+    color: #b45309;
+    border-color: #fde68a;
+    background: #fffbeb;
+}
+
+.invitacion-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.invitacion-form .field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.invitacion-form .input-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.invitacion-form .input-box:focus-within {
+    border-color: #2d5a27;
+}
+
+.invitacion-form .inner-icon {
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+
+.invitacion-form input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 0.95rem;
+    color: #1e293b;
+    background: transparent;
+    min-width: 0;
+}
+
+.btn-invitacion-primario {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #2d5a27;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.btn-invitacion-primario:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.invitacion-resultado {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.invitacion-resultado-titulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #166534;
+    font-weight: 700;
+    font-size: 1rem;
+}

@@ -83,7 +83,11 @@ function Login() {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('username', response.data.username);
         localStorage.setItem('role', response.data.role);
-        navigate('/dashboard');
+
+        // Residentes y conserjes usan la app móvil; el administrador entra
+        // directo al panel de escritorio.
+        const esMobil = response.data.role === 'Residente' || response.data.role === 'Conserje';
+        navigate(esMobil ? '/m' : '/dashboard');
     };
 
     return (

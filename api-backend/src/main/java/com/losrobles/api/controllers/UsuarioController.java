@@ -7,6 +7,7 @@ import com.losrobles.api.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,16 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('ROLE_Administrador')")
     public List<UsuarioResponseDTO> listar() {
         return usuarioService.findAllConDetalle();
+    }
+
+    /**
+     * Perfil del usuario autenticado. Usado por la app móvil (residente/conserje)
+     * para mostrar sus datos y, en el caso del residente, su departamento propio.
+     */
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UsuarioResponseDTO> obtenerPerfilPropio(Authentication auth) {
+        return ResponseEntity.ok(usuarioService.obtenerPerfilPropio(auth.getName()));
     }
 
     @PostMapping

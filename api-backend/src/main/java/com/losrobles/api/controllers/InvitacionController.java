@@ -47,6 +47,16 @@ public class InvitacionController {
     }
 
     /**
+     * Invitaciones propias del residente autenticado, para poder reabrir
+     * un código QR ya generado (por ejemplo si el visitante aún no llegó).
+     */
+    @GetMapping("/mias")
+    @PreAuthorize("hasAuthority('ROLE_Residente')")
+    public ResponseEntity<List<InvitacionResponseDTO>> misInvitaciones(Authentication authentication) {
+        return ResponseEntity.ok(invitacionService.listarMisInvitaciones(authentication.getName()));
+    }
+
+    /**
      * Búsqueda por Hash optimizada para el escáner del conserje.
      * Devuelve solo los datos necesarios para validar el ingreso.
      */

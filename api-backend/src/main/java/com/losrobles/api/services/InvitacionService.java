@@ -2,10 +2,14 @@ package com.losrobles.api.services;
 
 import com.google.common.base.Preconditions;
 import com.losrobles.api.dto.InvitacionResponseDTO;
+import com.losrobles.api.models.Departamento;
 import com.losrobles.api.models.Invitacion;
 import com.losrobles.api.models.Usuario;
+import com.losrobles.api.models.Visitante;
+import com.losrobles.api.repositories.DepartamentoRepository;
 import com.losrobles.api.repositories.InvitacionRepository;
 import com.losrobles.api.repositories.UsuarioRepository;
+import com.losrobles.api.repositories.VisitanteRepository;
 import com.losrobles.api.util.FechaUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +26,10 @@ public class InvitacionService {
     private final InvitacionRepository invitacionRepo;
 
     private final UsuarioRepository usuarioRepo;
+
+    private final VisitanteRepository visitanteRepo;
+
+    private final DepartamentoRepository departamentoRepo;
 
     public List<InvitacionResponseDTO> listarTodas() {
         return invitacionRepo.findAll().stream()
@@ -40,6 +48,22 @@ public class InvitacionService {
 
         nuevaInvi.setAnfitrion(residente);
 
+        // El cliente solo envía el DNI/id de referencia; se resuelven las entidades
+        // completas para que la respuesta (nombre del visitante, torre/número del
+        // departamento) no salga en null.
+        Preconditions.checkArgument(nuevaInvi.getVisitante() != null && nuevaInvi.getVisitante().getDni() != null,
+                "El DNI del visitante es obligatorio.");
+        Visitante visitante = visitanteRepo.findById(nuevaInvi.getVisitante().getDni())
+                .orElseThrow(() -> new RuntimeException("Error: El visitante no existe. Regístralo primero."));
+        nuevaInvi.setVisitante(visitante);
+
+        Preconditions.checkArgument(nuevaInvi.getDepartamentoDestino() != null
+                        && nuevaInvi.getDepartamentoDestino().getId() != null,
+                "El departamento destino es obligatorio.");
+        Departamento departamento = departamentoRepo.findById(nuevaInvi.getDepartamentoDestino().getId())
+                .orElseThrow(() -> new RuntimeException("Error: El departamento destino no existe."));
+        nuevaInvi.setDepartamentoDestino(departamento);
+
         if (nuevaInvi.getCodigoQrHash() == null || nuevaInvi.getCodigoQrHash().isEmpty()) {
             nuevaInvi.setCodigoQrHash(UUID.randomUUID().toString());
         }
@@ -48,6 +72,12 @@ public class InvitacionService {
         log.info("Invitación creada: id={}, anfitrion='{}', dniVisitante='{}', fechaProgramada={}",
                 guardada.getId(), username, guardada.getVisitante().getDni(), guardada.getFechaProgramada());
         return mapToDTO(guardada);
+    }
+
+    public List<InvitacionResponseDTO> listarMisInvitaciones(String username) {
+        return invitacionRepo.findByAnfitrion_UsernameOrderByFechaCreacionDesc(username).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     public InvitacionResponseDTO buscarPorHashDTO(String hash) {
@@ -67,6 +97,7 @@ public class InvitacionService {
                 .id(invi.getId()) // Sincronizado con el modelo
                 .codigoQrHash(invi.getCodigoQrHash())
                 .nombreAnfitrion(invi.getAnfitrion().getNombres() + " " + invi.getAnfitrion().getApellidos())
+                .nombreVisitante(invi.getVisitante().getNombre() + " " + invi.getVisitante().getApellidos())
                 .dniVisitante(invi.getVisitante().getDni())
                 .nombreDepartamento(invi.getDepartamentoDestino().getBloqueTorre() + " - "
                         + invi.getDepartamentoDestino().getNumeroDepa())

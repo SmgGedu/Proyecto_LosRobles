@@ -1,0 +1,233 @@
+.escanear-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.escanear-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.escanear-header-icon {
+    background: #2d5a27;
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.escanear-header h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.escanear-header p {
+    margin: 2px 0 0;
+    font-size: 0.82rem;
+    color: #94a3b8;
+}
+
+.escanear-video-wrap {
+    background: #0f172a;
+    border-radius: 14px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+}
+
+.escanear-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.escanear-sin-camara {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.escanear-manual {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.escanear-manual label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.escanear-manual-row {
+    display: flex;
+    gap: 8px;
+}
+
+.escanear-manual-row input {
+    flex: 1;
+    min-width: 0;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+}
+
+.escanear-manual-row button {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0 16px;
+    font-weight: 700;
+    color: #475569;
+    cursor: pointer;
+}
+
+.escanear-preview {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.escanear-preview-fila {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.escanear-preview-fila svg {
+    color: #2d5a27;
+    flex-shrink: 0;
+}
+
+.escanear-anfitrion {
+    font-size: 0.82rem;
+    color: #94a3b8;
+}
+
+.escanear-preview .field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.escanear-preview .input-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 9px 12px;
+}
+
+.escanear-preview .inner-icon {
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+
+.escanear-preview .input-box input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 0.9rem;
+    color: #1e293b;
+    min-width: 0;
+}
+
+.escanear-acciones {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.btn-primario, .btn-secundario {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 12px;
+    padding: 13px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primario {
+    background: #2d5a27;
+    color: white;
+}
+
+.btn-primario:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-secundario {
+    background: #f8fafc;
+    color: #475569;
+    border: 1.5px solid #e2e8f0;
+}
+
+.escanear-resultado {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 32px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+}
+
+.escanear-resultado p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #475569;
+}
+
+.escanear-resultado--exito {
+    border: 1.5px solid #bbf7d0;
+    background: #f0fdf4;
+}
+
+.escanear-resultado--exito svg {
+    color: #166534;
+}
+
+.escanear-resultado--error {
+    border: 1.5px solid #fecaca;
+    background: #fef2f2;
+}
+
+.escanear-resultado--error svg {
+    color: #b91c1c;
+}
+
+.escanear-resultado .btn-primario {
+    flex: none;
+    padding: 10px 20px;
+}
