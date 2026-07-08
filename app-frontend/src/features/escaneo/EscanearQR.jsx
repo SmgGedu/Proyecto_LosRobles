@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import QrScanner from 'qr-scanner';
 import QrScannerWorkerPath from 'qr-scanner/qr-scanner-worker.min.js?url';
 import axios from '../../api/axiosConfig';
-import { ScanLine, User, CreditCard, Home, CheckCircle, XCircle, RotateCcw, Car, MessageSquare } from 'lucide-react';
+import { ScanLine, User, CreditCard, Home, CheckCircle, XCircle, RotateCcw, Car, MessageSquare, QrCode } from 'lucide-react';
 import './EscanearQR.css';
 
 QrScanner.WORKER_PATH = QrScannerWorkerPath;
@@ -108,12 +108,15 @@ const EscanearQR = () => {
                     <form className="escanear-manual" onSubmit={handleBuscarManual}>
                         <label>Código manual (si no puedes escanear)</label>
                         <div className="escanear-manual-row">
-                            <input
-                                type="text"
-                                placeholder="Pega o escribe el código QR"
-                                value={hashManual}
-                                onChange={(e) => setHashManual(e.target.value)}
-                            />
+                            <div className="input-box">
+                                <QrCode className="inner-icon" size={18} />
+                                <input
+                                    type="text"
+                                    placeholder="Pega o escribe el código QR"
+                                    value={hashManual}
+                                    onChange={(e) => setHashManual(e.target.value)}
+                                />
+                            </div>
                             <button type="submit">Buscar</button>
                         </div>
                     </form>

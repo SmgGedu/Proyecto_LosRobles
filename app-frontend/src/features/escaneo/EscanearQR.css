@@ -80,12 +80,27 @@
     gap: 8px;
 }
 
-.escanear-manual-row input {
+.escanear-manual-row .input-box {
+    position: relative;
+    display: flex;
+    align-items: center;
     flex: 1;
     min-width: 0;
+}
+
+.escanear-manual-row .inner-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.escanear-manual-row input {
+    width: 100%;
     border: 1.5px solid #e2e8f0;
     border-radius: 11px;
-    padding: 11px 14px;
+    padding: 11px 14px 11px 44px;
     font-size: 0.9rem;
     background-color: #f8fafc;
     color: #1e293b;
