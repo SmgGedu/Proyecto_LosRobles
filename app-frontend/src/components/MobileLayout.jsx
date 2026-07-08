@@ -30,38 +30,44 @@ const MobileLayout = () => {
     return (
         <div className="mobile-shell">
             <header className="mobile-header">
-                <div className="mobile-header-brand">
-                    <img src="/images/logomin.png" alt="Los Robles" />
-                    <span>Los Robles</span>
-                </div>
-                <div className="mobile-header-user">
-                    <div className="mobile-avatar">{username.charAt(0).toUpperCase()}</div>
-                    {role === 'Conserje' && (
-                        <Link to="/dashboard" className="mobile-icon-btn" title="Ver panel de escritorio">
-                            <Monitor size={19} />
-                        </Link>
-                    )}
-                    <button className="mobile-icon-btn" onClick={handleLogout} title="Cerrar sesión">
-                        <LogOut size={19} />
-                    </button>
+                <div className="mobile-header-inner">
+                    <div className="mobile-header-brand">
+                        <img src="/images/logomin.png" alt="Los Robles" />
+                        <span>Los Robles</span>
+                    </div>
+                    <div className="mobile-header-user">
+                        <div className="mobile-avatar">{username.charAt(0).toUpperCase()}</div>
+                        {role === 'Conserje' && (
+                            <Link to="/dashboard" className="mobile-icon-btn" title="Ver panel de escritorio">
+                                <Monitor size={19} />
+                            </Link>
+                        )}
+                        <button className="mobile-icon-btn" onClick={handleLogout} title="Cerrar sesión">
+                            <LogOut size={19} />
+                        </button>
+                    </div>
                 </div>
             </header>
 
             <main className="mobile-content">
-                <Outlet />
+                <div className="mobile-content-inner">
+                    <Outlet />
+                </div>
             </main>
 
             <nav className="mobile-tabbar">
-                {menuItems.map((item) => (
-                    <Link
-                        key={item.path}
-                        to={item.path}
-                        className={`mobile-tab ${location.pathname.startsWith(item.path) ? 'active' : ''}`}
-                    >
-                        {item.icon}
-                        <span>{item.name}</span>
-                    </Link>
-                ))}
+                <div className="mobile-tabbar-inner">
+                    {menuItems.map((item) => (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            className={`mobile-tab ${location.pathname.startsWith(item.path) ? 'active' : ''}`}
+                        >
+                            {item.icon}
+                            <span>{item.name}</span>
+                        </Link>
+                    ))}
+                </div>
             </nav>
         </div>
     );

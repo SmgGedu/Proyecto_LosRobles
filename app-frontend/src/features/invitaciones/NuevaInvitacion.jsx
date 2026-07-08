@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from '../../api/axiosConfig';
 import QrCodeCard from './QrCodeCard';
-import { UserPlus, CreditCard, Phone, CalendarDays, Clock, Home, CheckCircle, PlusCircle } from 'lucide-react';
+import {
+    UserPlus, CreditCard, Phone, CalendarDays, Clock, Home, CheckCircle, PlusCircle, Star, Truck,
+} from 'lucide-react';
 import './NuevaInvitacion.css';
 
 const hoyISO = () => new Date().toISOString().slice(0, 10);
@@ -12,6 +14,8 @@ const initialFormState = {
     nombres: '',
     apellidos: '',
     telefono: '',
+    tipoVisita: 'NORMAL',
+    empresaDelivery: '',
     fechaProgramada: hoyISO(),
     horaExpiracion: finDelDia(hoyISO()),
 };
@@ -59,19 +63,30 @@ const NuevaInvitacion = () => {
     };
 
     const asegurarVisitante = async () => {
+        const esDelivery = formData.tipoVisita === 'DELIVERY';
+        let visitanteExistente = null;
         try {
-            await axios.get(`/visitantes/por-dni/${formData.dni}`);
+            const res = await axios.get(`/visitantes/por-dni/${formData.dni}`);
+            visitanteExistente = res.data;
         } catch (err) {
-            if (err.response?.status === 404) {
-                await axios.post('/visitantes', {
-                    dni: formData.dni,
-                    nombre: formData.nombres,
-                    apellidos: formData.apellidos,
-                    telefono: formData.telefono || null,
-                });
-            } else {
-                throw err;
-            }
+            if (err.response?.status !== 404) throw err;
+        }
+
+        if (!visitanteExistente) {
+            await axios.post('/visitantes', {
+                dni: formData.dni,
+                nombre: formData.nombres,
+                apellidos: formData.apellidos,
+                telefono: formData.telefono || null,
+                empresaDelivery: esDelivery ? formData.empresaDelivery : null,
+            });
+            return;
+        }
+
+        // Visitante ya existente: solo lo actualizamos si hace falta marcar
+        // la empresa de delivery (sin tocar sus demás datos, p. ej. si está bloqueado).
+        if (esDelivery && visitanteExistente.empresaDelivery !== formData.empresaDelivery) {
+            await axios.post('/visitantes', { ...visitanteExistente, empresaDelivery: formData.empresaDelivery });
         }
     };
 
@@ -100,6 +115,8 @@ const NuevaInvitacion = () => {
         setInvitacionCreada(null);
         setFormData({ ...initialFormState, fechaProgramada: hoyISO(), horaExpiracion: finDelDia(hoyISO()) });
     };
+
+    const esDelivery = formData.tipoVisita === 'DELIVERY';
 
     if (cargandoPerfil) {
         return <div className="invitacion-empty">Cargando...</div>;
@@ -201,6 +218,36 @@ const NuevaInvitacion = () => {
                         />
                     </div>
                 </div>
+
+                <div className="field">
+                    <label>Tipo de Visita</label>
+                    <div className="input-box">
+                        <Star className="inner-icon" size={18} />
+                        <select
+                            value={formData.tipoVisita}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, tipoVisita: e.target.value }))}
+                        >
+                            <option value="NORMAL">Normal</option>
+                            <option value="DELIVERY">Delivery</option>
+                        </select>
+                    </div>
+                </div>
+
+                {esDelivery && (
+                    <div className="field anim-fade">
+                        <label>Empresa de Delivery</label>
+                        <div className="input-box">
+                            <Truck className="inner-icon" size={18} />
+                            <input
+                                type="text"
+                                placeholder="Rappi, Glovo, PedidosYa..."
+                                required
+                                value={formData.empresaDelivery}
+                                onChange={(e) => setFormData((prev) => ({ ...prev, empresaDelivery: e.target.value }))}
+                            />
+                        </div>
+                    </div>
+                )}
 
                 <div className="field">
                     <label>Fecha programada</label>

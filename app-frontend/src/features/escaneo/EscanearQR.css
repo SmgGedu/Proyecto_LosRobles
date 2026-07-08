@@ -67,9 +67,11 @@
 
 .escanear-manual label {
     display: block;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
     margin-bottom: 8px;
 }
 
@@ -82,9 +84,21 @@
     flex: 1;
     min-width: 0;
     border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 10px 12px;
+    border-radius: 11px;
+    padding: 11px 14px;
     font-size: 0.9rem;
+    background-color: #f8fafc;
+    color: #1e293b;
+    transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.escanear-manual-row input:focus {
+    outline: none;
+    border-color: #2d5a27;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
 }
 
 .escanear-manual-row button {
@@ -127,33 +141,46 @@
 
 .escanear-preview .field label {
     display: block;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #475569;
-    margin-bottom: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
 }
 
 .escanear-preview .input-box {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 8px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 9px 12px;
 }
 
 .escanear-preview .inner-icon {
+    position: absolute;
+    left: 14px;
     color: #94a3b8;
-    flex-shrink: 0;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .escanear-preview .input-box input {
-    border: none;
-    outline: none;
-    flex: 1;
+    width: 100%;
+    padding: 11px 14px 11px 44px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 11px;
     font-size: 0.9rem;
+    background-color: #f8fafc;
     color: #1e293b;
-    min-width: 0;
+    transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.escanear-preview .input-box input:focus {
+    outline: none;
+    border-color: #2d5a27;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
 }
 
 .escanear-acciones {
