@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import {
-  Home, Users, ClipboardList, LogOut, Menu, ChevronLeft, ShieldCheck, UserCog
+  Home, Users, ClipboardList, LogOut, Menu, ChevronLeft, ShieldCheck, UserCog, Smartphone
 } from 'lucide-react';
 import './MainLayout.css';
 
@@ -28,6 +28,10 @@ const MainLayout = () => {
 
     if (role === 'Administrador') {
         menuItems.push({ path: '/admin', name: 'Panel de Administrador', icon: <UserCog size={22}/> });
+    }
+
+    if (role === 'Conserje') {
+        menuItems.push({ path: '/m/escanear', name: 'App Móvil', icon: <Smartphone size={22}/> });
     }
 
     return (
