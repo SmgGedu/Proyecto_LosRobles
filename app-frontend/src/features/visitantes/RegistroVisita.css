@@ -380,6 +380,9 @@
 
 /* ── Responsive ── */
 @media (max-width: 620px) {
+    .registro-container {
+        padding: 20px 16px;
+    }
     .form-grid {
         grid-template-columns: 1fr;
     }
@@ -389,5 +392,8 @@
     }
     .field--hidden {
         display: none;
+    }
+    .objetos-list {
+        grid-template-columns: 1fr;
     }
 }

@@ -7,12 +7,13 @@
   box-sizing: border-box; /* Crucial: los paddings no suman al ancho total */
 }
 
-html, 
-body, 
+html,
+body,
 #root {
   width: 100%;           /* Ocupa todo el ancho del navegador */
   height: 100%;          /* Ocupa todo el alto del navegador */
-  overflow: hidden;      /* Evita que aparezcan barras de scroll en el cuerpo principal */
+  overflow-x: hidden;    /* Evita scroll horizontal */
+  overflow-y: auto;      /* Permite scroll si el contenido no entra (celulares con teclado/barra de direcciones) */
 }
 
 /* ==========================================================================

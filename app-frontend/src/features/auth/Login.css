@@ -3,8 +3,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh; /* Descuenta la barra de direcciones/teclado en celulares */
+  padding: 24px 16px;
   background-color: #f0f2f5;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 /* Tarjeta blanca de Login */
@@ -16,6 +20,12 @@
   width: 100%;
   max-width: 400px;
   text-align: center;
+}
+
+@media (max-width: 420px) {
+  .login-card {
+    padding: 1.75rem 1.25rem;
+  }
 }
 
 /* Estilo del Logo */
