@@ -123,6 +123,15 @@
     color: var(--accent-color);
 }
 
+/* El sidebar es oscuro: el anillo de foco verde global sería poco visible,
+   así que aquí usamos el verde neón de acento para mantener contraste. */
+.toggle-btn:focus-visible,
+.modern-nav-item:focus-visible,
+.modern-btn-logout:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
 /* ==========================================================================
    NAVEGACIÓN Y BOTONES
    ========================================================================== */
@@ -147,6 +156,11 @@
     min-width: 24px;
     display: flex;
     justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.modern-nav-item:hover .icon {
+    transform: translateX(2px);
 }
 
 .modern-nav-item .text {

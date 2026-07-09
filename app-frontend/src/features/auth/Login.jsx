@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axiosConfig';
 import { useNavigate } from 'react-router-dom';
+import { User, Lock, AlertCircle, Clock } from 'lucide-react';
 import './Login.css';
 
 /**
@@ -97,13 +98,13 @@ function Login() {
                 <img src="/images/logo.png" alt="Los Robles Logo" className="login-logo" />
 
                 {/* Visualización de la hora actual para el conserje */}
-                <div className="reloj-login">{hora}</div>
+                <div className="reloj-login"><Clock size={14}/> {hora}</div>
 
                 <h2>Acceso Administrativo</h2>
                 <p>Ingrese sus credenciales</p>
 
                 {/* Alerta de error: Solo se muestra si el login falla */}
-                {error && <div className="error-msg">{error}</div>}
+                {error && <div className="error-msg"><AlertCircle size={15} style={{ flexShrink: 0 }}/> {error}</div>}
 
                 {/*
                     autoComplete="off": Evita que el navegador sugiera datos antiguos.
@@ -111,29 +112,35 @@ function Login() {
                 <form onSubmit={handleSubmit} autoComplete="off">
                     <div className="form-group">
                         <label htmlFor="username">Usuario</label>
-                        <input
-                            id="username"
-                            name="username"
-                            type="text"
-                            placeholder="Nombre de usuario"
-                            onChange={handleChange}
-                            // 'new-password' es un truco para forzar al navegador a no autocompletar
-                            autoComplete="new-password"
-                            required
-                        />
+                        <div className="input-box">
+                            <User size={16} className="inner-icon"/>
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                placeholder="Nombre de usuario"
+                                onChange={handleChange}
+                                // 'new-password' es un truco para forzar al navegador a no autocompletar
+                                autoComplete="new-password"
+                                required
+                            />
+                        </div>
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="password">Contraseña</label>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            placeholder="••••••••"
-                            onChange={handleChange}
-                            autoComplete="new-password"
-                            required
-                        />
+                        <div className="input-box">
+                            <Lock size={16} className="inner-icon"/>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="••••••••"
+                                onChange={handleChange}
+                                autoComplete="new-password"
+                                required
+                            />
+                        </div>
                     </div>
 
                     <button type="submit" className="btn-login" disabled={conectando}>
