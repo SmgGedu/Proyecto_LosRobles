@@ -168,6 +168,7 @@ const Inicio = () => {
                             Aún no hay movimientos registrados hoy. Para monitoreo en vivo del aforo, revisa "Visitantes en el Edificio".
                         </p>
                     ) : (
+                        <div className="recent-activity-table-wrap">
                         <table>
                             <thead>
                                 <tr>
@@ -199,6 +200,7 @@ const Inicio = () => {
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                     )}
                 </div>
 

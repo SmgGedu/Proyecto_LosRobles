@@ -133,6 +133,16 @@
     gap: 1.5rem;
 }
 
+/* Los ítems de grid no se achican por debajo del ancho mínimo de su
+   contenido por defecto. La tabla de movimientos, al llenarse con datos
+   reales, puede pedir más ancho del disponible y empujar todo el grid
+   (incluida la tarjeta "Estado del Sistema") fuera de la pantalla.
+   min-width: 0 permite que el ítem se achique correctamente. */
+.recent-activity,
+.info-side-card {
+    min-width: 0;
+}
+
 .recent-activity {
     background: white;
     padding: 1.5rem;
@@ -172,10 +182,18 @@
     margin-top: 1rem;
 }
 
+/* Si algún dato real (nombre, depto) es más ancho de lo previsto, la tabla
+   escala su propio scroll horizontal en vez de forzar el ancho del grid. */
+.recent-activity-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 1rem;
+}
+
 .recent-activity table {
     width: 100%;
+    min-width: 420px;
     border-collapse: collapse;
-    margin-top: 1rem;
 }
 
 .recent-activity th {
