@@ -39,6 +39,9 @@
 /* Área de contenido a la derecha del sidebar */
 .main-viewport {
     flex: 1; /* Ocupa el espacio restante automáticamente */
+    min-width: 0; /* Permite que el flex-item se achique por debajo de su
+                     contenido intrínseco (grids, tablas); sin esto el
+                     panel desborda el ancho de pantallas angostas */
     display: flex;
     flex-direction: column;
     overflow: hidden; /* Mantiene el header fijo */
@@ -272,4 +275,68 @@
     box-shadow: var(--shadow-md);
     margin: 0 auto;
     border: 1px solid #f1f5f9;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   Este panel es de escritorio, pero un Administrador o Conserje puede
+   entrar desde el celular: el sidebar se reduce a solo íconos (igual que
+   el estado ".collapsed" ya existente) y se recorta el padding para que
+   nada desborde el ancho de pantalla.
+   ========================================================================== */
+@media (max-width: 860px) {
+    .modern-sidebar {
+        width: 76px;
+        min-width: 76px;
+        padding: 0.75rem 0.5rem;
+    }
+
+    .sidebar-top {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+    }
+
+    .logo-section span,
+    .modern-nav-item .text,
+    .modern-btn-logout span {
+        display: none;
+    }
+
+    .modern-nav-item {
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .modern-header {
+        padding: 0 1.25rem;
+    }
+
+    .header-info span {
+        display: none;
+    }
+
+    .user-name {
+        display: none;
+    }
+
+    .modern-content {
+        padding: 1.25rem;
+    }
+
+    .glass-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modern-content {
+        padding: 0.75rem;
+    }
+
+    .glass-card {
+        padding: 1.1rem;
+        border-radius: 14px;
+    }
 }

@@ -1,11 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import QrScanner from 'qr-scanner';
-import QrScannerWorkerPath from 'qr-scanner/qr-scanner-worker.min.js?url';
 import axios from '../../api/axiosConfig';
 import { ScanLine, User, CreditCard, Home, CheckCircle, XCircle, RotateCcw, Car, MessageSquare, QrCode } from 'lucide-react';
 import './EscanearQR.css';
-
-QrScanner.WORKER_PATH = QrScannerWorkerPath;
 
 const EscanearQR = () => {
     const videoRef = useRef(null);

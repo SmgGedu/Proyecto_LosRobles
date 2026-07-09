@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 @Component
 public class JwtUtils {
 
-    // ✅ Clave fija desde variable de entorno
     @Value("${jwt.secret}")
     private String jwtSecret;
 
