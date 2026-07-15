@@ -3,6 +3,7 @@ package com.losrobles.api.services;
 import com.losrobles.api.config.JwtUtils;
 import com.losrobles.api.dto.JwtResponse;
 import com.losrobles.api.dto.LoginRequest;
+import com.losrobles.api.dto.SignupRequest;
 import com.losrobles.api.models.Rol;
 import com.losrobles.api.models.Usuario;
 import com.losrobles.api.repositories.RolRepository;
@@ -60,28 +61,39 @@ public class AuthService {
         return new JwtResponse(jwt, loginRequest.getUsername(), rol);
     }
 
-    public String register(Usuario usuario) {
-        if (StringUtils.isAnyBlank(usuario.getUsername(), usuario.getDni(), usuario.getPassword())) {
+    /**
+     * Registro público (sin autenticación). Por diseño de seguridad, el rol NUNCA
+     * se toma de la petición del cliente: toda cuenta creada por esta vía queda
+     * forzada a RESIDENTE. Alta de Conserje/Administrador requiere el endpoint
+     * protegido POST /api/usuarios (ROLE_Administrador).
+     */
+    public String register(SignupRequest request) {
+        if (StringUtils.isAnyBlank(request.getUsername(), request.getDni(), request.getPassword())) {
             throw new IllegalArgumentException("Error: Username, DNI y contraseña son obligatorios.");
         }
-        if (usuarioRepository.existsByUsername(usuario.getUsername())) {
+        if (usuarioRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Error: El username ya está en uso");
         }
-        if (usuarioRepository.existsByDni(usuario.getDni())) {
+        if (usuarioRepository.existsByDni(request.getDni())) {
             throw new IllegalArgumentException("Error: El DNI ya está registrado");
         }
-        if (usuario.getRol() == null || usuario.getRol().getId() == null) {
-            throw new IllegalArgumentException("Error: Es necesario asignar un ID de rol válido.");
-        }
-        Rol rol = rolRepository.findById(usuario.getRol().getId())
-                .orElseThrow(() -> new RuntimeException("Error: Rol no encontrado en el sistema."));
-        usuario.setRol(rol);
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        if (usuario.getEstado() == null) {
-            usuario.setEstado(true);
-        }
+        Rol rolResidente = rolRepository.findByNombreRolIgnoreCase("Residente")
+                .orElseThrow(() -> new IllegalStateException("Error de configuración: el rol RESIDENTE no existe en el sistema."));
+
+        Usuario usuario = new Usuario();
+        usuario.setDni(request.getDni());
+        usuario.setNombres(request.getNombres());
+        usuario.setApellidos(request.getApellidos());
+        usuario.setTelefono(request.getTelefono());
+        usuario.setUsername(request.getUsername());
+        usuario.setEmail(request.getEmail());
+        usuario.setPassword(passwordEncoder.encode(request.getPassword()));
+        usuario.setRol(rolResidente);
+        usuario.setEstado(true);
+
         usuarioRepository.save(usuario);
-        log.info("Nuevo usuario registrado: username='{}', rol='{}'", usuario.getUsername(), rol.getNombreRol());
-        return "Usuario " + usuario.getUsername() + " registrado con éxito. Perfil asignado: " + rol.getNombreRol();
+        log.info("Nuevo usuario registrado (autoregistro público): username='{}', rol='{}'",
+                usuario.getUsername(), rolResidente.getNombreRol());
+        return "Usuario " + usuario.getUsername() + " registrado con éxito. Perfil asignado: " + rolResidente.getNombreRol();
     }
 }

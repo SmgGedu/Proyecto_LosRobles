@@ -2,6 +2,7 @@ package com.losrobles.api.services;
 
 import com.losrobles.api.dto.AccesoResponseDTO;
 import com.losrobles.api.dto.IngresoRequestDTO;
+import com.losrobles.api.dto.RegistroCompletoRequest;
 import com.losrobles.api.models.*;
 import com.losrobles.api.repositories.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,8 @@ class RegistroAccesoServiceTest {
     private DepartamentoRepository departamentoRepo;
     @Mock
     private EventoSeguridadRepository eventoSeguridadRepo;
+    @Mock
+    private ConfiguracionAforoService configuracionAforoService;
 
     @InjectMocks
     private RegistroAccesoService registroAccesoService;
@@ -81,6 +84,7 @@ class RegistroAccesoServiceTest {
         invitacion.setFechaProgramada(LocalDate.now());
 
         when(usuarioRepo.findByUsername("conserje1")).thenReturn(Optional.of(conserje));
+        when(configuracionAforoService.obtenerAforoMaximo()).thenReturn(50);
     }
 
     @Test
@@ -139,6 +143,69 @@ class RegistroAccesoServiceTest {
         assertThat(resultado.getDniVisitante()).isEqualTo("12345678");
         assertThat(resultado.getTipoIngreso()).isEqualTo("QR");
         assertThat(invitacion.getEstado()).isEqualTo("UTILIZADA");
+
+        verify(eventoSeguridadRepo, never()).save(any(EventoSeguridad.class));
+    }
+
+    /**
+     * CP-05: reutilizar un QR ya utilizado debe rechazarse y quedar registrado
+     * como evento de seguridad, sin crear un segundo registro de acceso.
+     */
+    @Test
+    void registrarEntradaQR_conQrYaUtilizado_lanzaExcepcionYRegistraEvento() {
+        invitacion.setEstado("UTILIZADA");
+
+        IngresoRequestDTO request = new IngresoRequestDTO();
+        request.setQrHash("qr-valido");
+
+        when(invitacionRepo.findByCodigoQrHash("qr-valido")).thenReturn(Optional.of(invitacion));
+
+        assertThatThrownBy(() -> registroAccesoService.registrarEntradaQR(request, "conserje1"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("ya fue utilizada");
+
+        ArgumentCaptor<EventoSeguridad> eventoCaptor = ArgumentCaptor.forClass(EventoSeguridad.class);
+        verify(eventoSeguridadRepo).save(eventoCaptor.capture());
+        assertThat(eventoCaptor.getValue().getTipoEvento()).isEqualTo("QR_YA_USADO");
+
+        verify(registroRepo, never()).save(any(RegistroAcceso.class));
+    }
+
+    /**
+     * CP-07: registro manual de un visitante nuevo (sin invitación previa),
+     * vinculado directamente al departamento de destino.
+     */
+    @Test
+    void registrarEntradaManual_conDatosValidos_creaRegistroDeAcceso() {
+        RegistroCompletoRequest request = new RegistroCompletoRequest();
+        request.setDni_visitante("99998888");
+        request.setNombres("Carlos");
+        request.setApellidos("Ramirez");
+        request.setId_departamento_destino(10);
+        request.setTipo_visita("NORMAL");
+        request.setTipo_ingreso("Peatonal");
+
+        Visitante visitanteNuevo = new Visitante();
+        visitanteNuevo.setDni("99998888");
+        visitanteNuevo.setNombre("Carlos");
+        visitanteNuevo.setApellidos("Ramirez");
+        visitanteNuevo.setBloqueado(false);
+
+        when(visitanteRepo.findByDni("99998888")).thenReturn(Optional.empty());
+        when(visitanteRepo.save(any(Visitante.class))).thenReturn(visitanteNuevo);
+        when(departamentoRepo.findById(10)).thenReturn(Optional.of(departamento));
+        when(registroRepo.save(any(RegistroAcceso.class))).thenAnswer(invocation -> {
+            RegistroAcceso ra = invocation.getArgument(0);
+            ra.setId(200);
+            return ra;
+        });
+        when(objetoRepo.findByRegistroAcceso(any(RegistroAcceso.class))).thenReturn(Collections.emptyList());
+
+        AccesoResponseDTO resultado = registroAccesoService.registrarEntradaManual(request, "conserje1");
+
+        assertThat(resultado.getId()).isEqualTo(200);
+        assertThat(resultado.getDniVisitante()).isEqualTo("99998888");
+        assertThat(resultado.getTipoIngreso()).isEqualTo("PEATONAL");
 
         verify(eventoSeguridadRepo, never()).save(any(EventoSeguridad.class));
     }

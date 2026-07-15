@@ -2,7 +2,7 @@ package com.losrobles.api.controllers;
 
 import com.losrobles.api.dto.JwtResponse;
 import com.losrobles.api.dto.LoginRequest;
-import com.losrobles.api.models.Usuario;
+import com.losrobles.api.dto.SignupRequest;
 import com.losrobles.api.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,9 +32,9 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> registerUser(@RequestBody SignupRequest request) {
         try {
-            String mensaje = authService.register(usuario);
+            String mensaje = authService.register(request);
             return ResponseEntity.ok(mensaje);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -18,6 +18,10 @@ function Login() {
     // Estado para indicar que se está reintentando la conexión (cold start del backend)
     const [conectando, setConectando] = useState(false);
 
+    // Estado de carga del envío del formulario: evita doble clic y confirma
+    // visualmente que la petición está en curso, se resuelva con éxito o error.
+    const [enviando, setEnviando] = useState(false);
+
     // Estado para el reloj digital de la interfaz
     const [hora, setHora] = useState(new Date().toLocaleTimeString());
 
@@ -50,6 +54,7 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(''); // Limpia errores previos antes de intentar
+        setEnviando(true);
 
         try {
             await intentarLogin();
@@ -57,6 +62,7 @@ function Login() {
             const status = err.response?.status;
             if (status === 401 || status === 403) {
                 setError('Usuario o contraseña no coinciden.');
+                setEnviando(false);
                 return;
             }
 
@@ -74,8 +80,11 @@ function Login() {
                     : 'No se pudo conectar con el servidor. Intenta nuevamente en unos momentos.');
             } finally {
                 setConectando(false);
+                setEnviando(false);
             }
+            return;
         }
+        setEnviando(false);
     };
 
     const intentarLogin = async () => {
@@ -143,8 +152,8 @@ function Login() {
                         </div>
                     </div>
 
-                    <button type="submit" className="btn-login" disabled={conectando}>
-                        {conectando ? 'Conectando...' : 'Entrar al Sistema'}
+                    <button type="submit" className="btn-login" disabled={enviando}>
+                        {conectando ? 'Conectando...' : enviando ? 'Ingresando...' : 'Entrar al Sistema'}
                     </button>
                 </form>
 

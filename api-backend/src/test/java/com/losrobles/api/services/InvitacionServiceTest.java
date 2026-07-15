@@ -5,8 +5,10 @@ import com.losrobles.api.models.Departamento;
 import com.losrobles.api.models.Invitacion;
 import com.losrobles.api.models.Usuario;
 import com.losrobles.api.models.Visitante;
+import com.losrobles.api.repositories.DepartamentoRepository;
 import com.losrobles.api.repositories.InvitacionRepository;
 import com.losrobles.api.repositories.UsuarioRepository;
+import com.losrobles.api.repositories.VisitanteRepository;
 import com.losrobles.api.util.FechaUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,10 @@ class InvitacionServiceTest {
 
     @Mock
     private UsuarioRepository usuarioRepo;
+    @Mock
+    private VisitanteRepository visitanteRepo;
+    @Mock
+    private DepartamentoRepository departamentoRepo;
 
     @InjectMocks
     private InvitacionService invitacionService;
@@ -77,6 +83,8 @@ class InvitacionServiceTest {
         invitacion.setFechaProgramada(FechaUtils.hoy());
 
         when(usuarioRepo.findByUsername("jperez")).thenReturn(Optional.of(residente));
+        when(visitanteRepo.findById("12345678")).thenReturn(Optional.of(visitante));
+        when(departamentoRepo.findById(10)).thenReturn(Optional.of(departamento));
         when(invitacionRepo.save(any(Invitacion.class))).thenAnswer(invocation -> {
             Invitacion arg = invocation.getArgument(0);
             arg.setId(99);
@@ -89,5 +97,18 @@ class InvitacionServiceTest {
         assertThat(resultado.getCodigoQrHash()).isNotBlank();
         assertThat(resultado.getNombreAnfitrion()).isEqualTo("Juan Perez");
         assertThat(resultado.getDniVisitante()).isEqualTo("12345678");
+    }
+
+    /**
+     * CP-04: buscar una invitación por un hash que no existe debe rechazarse
+     * con un mensaje claro, en vez de devolver datos parciales o nulos.
+     */
+    @Test
+    void buscarPorHashDTO_conHashInexistente_lanzaExcepcion() {
+        when(invitacionRepo.findByCodigoQrHash("hash-inexistente")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> invitacionService.buscarPorHashDTO("hash-inexistente"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("QR Inválido");
     }
 }
