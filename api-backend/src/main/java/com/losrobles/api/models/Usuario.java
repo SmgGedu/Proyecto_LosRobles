@@ -3,6 +3,9 @@ package com.losrobles.api.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.losrobles.api.util.FechaUtils;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -16,25 +19,38 @@ public class Usuario {
     @Column(name = "id_usuario")
     private Integer id;
 
+    @NotBlank(message = "El DNI es obligatorio")
+    @Size(max = 15, message = "El DNI no puede superar los 15 caracteres")
     @Column(nullable = false, unique = true, length = 15)
     private String dni;
 
+    @NotBlank(message = "Los nombres son obligatorios")
+    @Size(max = 100, message = "Los nombres no pueden superar los 100 caracteres")
     @Column(nullable = false, length = 100)
     private String nombres;
 
+    @NotBlank(message = "Los apellidos son obligatorios")
+    @Size(max = 100, message = "Los apellidos no pueden superar los 100 caracteres")
     @Column(nullable = false, length = 100)
     private String apellidos;
 
+    @Size(max = 15, message = "El teléfono no puede superar los 15 caracteres")
     @Column(length = 15)
     private String telefono;
 
+    @NotBlank(message = "El username es obligatorio")
+    @Size(max = 50, message = "El username no puede superar los 50 caracteres")
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 6, max = 100, message = "La contraseña debe tener entre 6 y 100 caracteres")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password_hash", nullable = false)
     private String password;
 
+    @Email(message = "El email no tiene un formato válido")
+    @Size(max = 100, message = "El email no puede superar los 100 caracteres")
     @Column(unique = true, length = 100)
     private String email;
 

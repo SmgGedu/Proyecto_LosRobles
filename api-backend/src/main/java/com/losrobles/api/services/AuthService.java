@@ -35,9 +35,18 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final LoginAttemptService loginAttemptService;
+
     public JwtResponse login(LoginRequest loginRequest) {
         if (StringUtils.isAnyBlank(loginRequest.getUsername(), loginRequest.getPassword())) {
             throw new IllegalArgumentException("Error: Usuario y contraseña son obligatorios.");
+        }
+
+        long bloqueoRestante = loginAttemptService.segundosDeBloqueoRestante(loginRequest.getUsername());
+        if (bloqueoRestante > 0) {
+            long minutos = (bloqueoRestante + 59) / 60;
+            throw new IllegalStateException(
+                    "Demasiados intentos fallidos. Intenta nuevamente en " + minutos + " minuto(s).");
         }
 
         Authentication authentication;
@@ -47,9 +56,11 @@ public class AuthService {
                             loginRequest.getUsername(),
                             loginRequest.getPassword()));
         } catch (BadCredentialsException ex) {
+            loginAttemptService.registrarFallo(loginRequest.getUsername());
             log.warn("Intento de login fallido para el usuario '{}'", loginRequest.getUsername());
             throw ex;
         }
+        loginAttemptService.registrarExito(loginRequest.getUsername());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         Usuario usuario = usuarioRepository.findByUsername(loginRequest.getUsername())

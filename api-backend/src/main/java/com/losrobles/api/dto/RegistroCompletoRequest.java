@@ -1,14 +1,22 @@
 package com.losrobles.api.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public class RegistroCompletoRequest {
     // Visitante
+    @NotBlank(message = "El DNI del visitante es obligatorio")
     private String dni_visitante;
+
+    @NotBlank(message = "Los nombres del visitante son obligatorios")
     private String nombres;
+
+    @NotBlank(message = "Los apellidos del visitante son obligatorios")
     private String apellidos;
 
     // Acceso
+    @NotNull(message = "El departamento destino es obligatorio")
     private Integer id_departamento_destino;
     private Integer id_residente_que_autoriza; // NUEVO: ID del amigo/anfitrión
     private String placa_vehiculo;

@@ -123,17 +123,17 @@ public class ReporteService {
             int rowIdx = FILA_HEADER_EXCEL + 1;
             for (RegistroAcceso r : registros) {
                 Row row = sheet.createRow(rowIdx++);
-                row.createCell(0).setCellValue(nombreVisitante(r));
-                row.createCell(1).setCellValue(r.getVisitante().getDni());
-                row.createCell(2).setCellValue(formatDepartamento(r));
-                row.createCell(3).setCellValue(nombreAnfitrion(r));
-                row.createCell(4).setCellValue(r.getConserjeEnTurno().getNombres());
-                row.createCell(5).setCellValue(r.getTipoIngreso());
-                row.createCell(6).setCellValue(r.getTipoVisita() != null ? r.getTipoVisita() : "-");
+                row.createCell(0).setCellValue(sanitizarCeldaExcel(nombreVisitante(r)));
+                row.createCell(1).setCellValue(sanitizarCeldaExcel(r.getVisitante().getDni()));
+                row.createCell(2).setCellValue(sanitizarCeldaExcel(formatDepartamento(r)));
+                row.createCell(3).setCellValue(sanitizarCeldaExcel(nombreAnfitrion(r)));
+                row.createCell(4).setCellValue(sanitizarCeldaExcel(r.getConserjeEnTurno().getNombres()));
+                row.createCell(5).setCellValue(sanitizarCeldaExcel(r.getTipoIngreso()));
+                row.createCell(6).setCellValue(sanitizarCeldaExcel(r.getTipoVisita() != null ? r.getTipoVisita() : "-"));
                 row.createCell(7).setCellValue(r.getHoraIngreso() != null ? r.getHoraIngreso().format(FECHA_HORA) : "-");
                 row.createCell(8).setCellValue(r.getHoraSalida() != null ? r.getHoraSalida().format(FECHA_HORA) : "-");
-                row.createCell(9).setCellValue(r.getEstadoAcceso());
-                row.createCell(10).setCellValue(r.getPlacaVehiculo() != null ? r.getPlacaVehiculo() : "");
+                row.createCell(9).setCellValue(sanitizarCeldaExcel(r.getEstadoAcceso()));
+                row.createCell(10).setCellValue(sanitizarCeldaExcel(r.getPlacaVehiculo() != null ? r.getPlacaVehiculo() : ""));
             }
 
             for (int i = 0; i < columnas.length; i++) {
@@ -231,6 +231,23 @@ public class ReporteService {
         return r.getDepartamentoDestino() != null
                 ? r.getDepartamentoDestino().getBloqueTorre() + "-" + r.getDepartamentoDestino().getNumeroDepa()
                 : "N/A";
+    }
+
+    /**
+     * Neutraliza inyección de fórmulas (CSV/Excel Formula Injection): si un
+     * valor proveniente de datos de usuario (nombre, placa, etc.) empieza con
+     * un carácter que Excel interpreta como inicio de fórmula (=, +, -, @),
+     * se le antepone un apóstrofe para que se trate como texto plano.
+     */
+    private String sanitizarCeldaExcel(String valor) {
+        if (valor == null || valor.isEmpty()) {
+            return valor;
+        }
+        char primero = valor.charAt(0);
+        if (primero == '=' || primero == '+' || primero == '-' || primero == '@' || primero == '\t') {
+            return "'" + valor;
+        }
+        return valor;
     }
 
     private String categoriaLabel(String categoria) {

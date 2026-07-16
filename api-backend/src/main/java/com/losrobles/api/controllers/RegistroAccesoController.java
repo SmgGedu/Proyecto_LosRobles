@@ -4,6 +4,7 @@ import com.losrobles.api.dto.AccesoResponseDTO;
 import com.losrobles.api.dto.AforoResponseDTO;
 import com.losrobles.api.dto.IngresoRequestDTO;
 import com.losrobles.api.services.RegistroAccesoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +36,7 @@ public class RegistroAccesoController {
     @PostMapping("/ingreso-qr")
     @PreAuthorize("hasAnyAuthority('ROLE_Administrador', 'ROLE_Conserje')")
     public ResponseEntity<AccesoResponseDTO> ingresoPorQR(
-            @RequestBody IngresoRequestDTO request,
+            @Valid @RequestBody IngresoRequestDTO request,
             Authentication auth) {
         return ResponseEntity.ok(registroService.registrarEntradaQR(request, auth.getName()));
     }
@@ -43,7 +44,7 @@ public class RegistroAccesoController {
     @PostMapping("/registro-manual")
     @PreAuthorize("hasAnyAuthority('ROLE_Administrador', 'ROLE_Conserje')")
     public ResponseEntity<AccesoResponseDTO> registroManual(
-            @RequestBody RegistroCompletoRequest request,
+            @Valid @RequestBody RegistroCompletoRequest request,
             Authentication auth) {
         try {
             AccesoResponseDTO resultado = registroService.registrarEntradaManual(request, auth.getName());

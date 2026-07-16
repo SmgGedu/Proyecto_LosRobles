@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -50,6 +51,23 @@ public class GlobalExceptionHandler {
                 "No tienes permisos para realizar esta acción.",
                 request.getRequestURI());
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    /**
+     * Errores de acceso a datos (violaciones de integridad, truncado de
+     * columnas, etc.) -> 400, sin exponer el SQL/nombres de tabla o columna
+     * subyacentes al cliente. Se registra el detalle completo en el log.
+     */
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ApiError> handleDataAccessException(DataAccessException ex, HttpServletRequest request) {
+        log.warn("Error de acceso a datos en {}: {}", request.getRequestURI(), ex.getMessage());
+        ApiError error = new ApiError(
+                FechaUtils.ahora(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Solicitud Inválida",
+                "No se pudo completar la operación: verifique los datos ingresados.",
+                request.getRequestURI());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     /**

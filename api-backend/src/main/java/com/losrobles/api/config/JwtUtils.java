@@ -13,7 +13,7 @@ public class JwtUtils {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    private final long jwtExpirationMs = 2592000000L; // 30 días
+    private final long jwtExpirationMs = 86400000L; // 24 horas
 
     private Key getKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());

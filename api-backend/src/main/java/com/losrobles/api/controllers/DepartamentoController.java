@@ -3,6 +3,7 @@ package com.losrobles.api.controllers;
 import com.losrobles.api.dto.DepartamentoResponseDTO;
 import com.losrobles.api.models.Departamento;
 import com.losrobles.api.services.DepartamentoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,7 +30,7 @@ public class DepartamentoController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_Administrador')")
-    public ResponseEntity<Departamento> crear(@RequestBody Departamento depa) {
+    public ResponseEntity<Departamento> crear(@Valid @RequestBody Departamento depa) {
         try {
             return ResponseEntity.ok(departamentoService.save(depa));
         } catch (Exception e) {

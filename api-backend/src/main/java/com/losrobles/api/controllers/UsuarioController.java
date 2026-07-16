@@ -4,7 +4,9 @@ import com.losrobles.api.dto.ResidenteDTO;
 import com.losrobles.api.dto.UsuarioResponseDTO;
 import com.losrobles.api.models.Usuario;
 import com.losrobles.api.services.UsuarioService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
@@ -38,13 +41,14 @@ public class UsuarioController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_Administrador')")
-    public ResponseEntity<?> crear(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> crear(@Valid @RequestBody Usuario usuario) {
         try {
             return ResponseEntity.ok(usuarioService.crearUsuario(usuario));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error al registrar el usuario: " + e.getMessage());
+            log.error("Error inesperado al registrar usuario", e);
+            return ResponseEntity.internalServerError().body("Ha ocurrido un error inesperado al registrar el usuario.");
         }
     }
 
@@ -85,7 +89,7 @@ public class UsuarioController {
         try {
             return ResponseEntity.ok(usuarioService.buscarResidente(nombre));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error inesperado al buscar residente", e);
             return ResponseEntity.internalServerError().build();
         }
     }
